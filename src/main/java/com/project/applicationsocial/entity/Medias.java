@@ -2,6 +2,7 @@ package com.project.applicationsocial.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.util.UUID;
 
@@ -10,7 +11,9 @@ import java.util.UUID;
 @Table(name = "medias")
 public class Medias {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "id", columnDefinition = "char(36)")
     private UUID ID;
 
     @Column(name = "base_name")

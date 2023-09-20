@@ -2,10 +2,9 @@ package com.project.applicationsocial.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.UUID;
 
 @Data
@@ -13,7 +12,9 @@ import java.util.UUID;
 @Table(name = "comments")
 public class Comments {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "id", columnDefinition = "char(36)")
     private UUID ID;
 
     @Column(name = "content")

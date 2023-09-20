@@ -1,11 +1,12 @@
 package com.project.applicationsocial.entity;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
-import java.sql.Time;
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.UUID;
 
 @Data
@@ -13,8 +14,8 @@ import java.util.UUID;
 @Table(name = "users")
 public class Users {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UUID ID;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(name = "user_name")
     private String userName;
@@ -50,12 +51,8 @@ public class Users {
     private Boolean enable;
 
     @Column(name = "created_at")
-    private Timestamp creatdAt;
+    private Timestamp createdAt;
 
-    @Column(name = "created_by")
-    private Timestamp createdBy;
-
+    @Column(name = "updated_at")
+    private Timestamp updatedAt;
 }
-
-
-
