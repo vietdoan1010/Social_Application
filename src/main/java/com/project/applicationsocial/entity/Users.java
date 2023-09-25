@@ -42,6 +42,7 @@ public class Users {
     private String phoneNumber;
 
     @Column(name = "date_of_birth")
+    @JsonFormat(pattern = "yyyy/MM/dd")
     private Timestamp dateOfBirth;
 
     @Column(name = "email", unique = true)
@@ -54,10 +55,10 @@ public class Users {
     private Boolean enable;
 
     @Column(name = "created_at")
-    @JsonFormat(pattern = "dd/MM/yyyy")
+    @JsonFormat(pattern = "yyyy/MM/dd")
     private Timestamp createdAt;
 
-    @JsonFormat(pattern = "dd/MM/yyyy")
+    @JsonFormat(pattern = "yyyy/MM/dd")
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 }
