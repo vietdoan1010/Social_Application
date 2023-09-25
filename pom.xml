@@ -18,12 +18,27 @@
 	</properties>
 
 	<dependencies>
+<!--		Security-->
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot-starter-security</artifactId>-->
+<!--			<version>3.1.0</version>-->
+<!--		</dependency>-->
+
+		<!--		flywaydb-->
 		<dependency>
 			<groupId>org.flywaydb</groupId>
-			<artifactId>flyway-parent</artifactId>
-			<version>9.21.2</version>
+			<artifactId>flyway-core</artifactId>
+			<version>9.22.2</version>
 		</dependency>
-<!--		Swagger-->
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-mysql</artifactId>
+		</dependency>
+
+
+
+		<!--		Swagger-->
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
@@ -49,6 +64,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
