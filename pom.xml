@@ -18,6 +18,7 @@
 	</properties>
 
 	<dependencies>
+
 <!--		Swagger-->
 		<dependency>
 			<groupId>org.springdoc</groupId>
