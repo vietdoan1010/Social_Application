@@ -18,7 +18,11 @@
 	</properties>
 
 	<dependencies>
-
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-parent</artifactId>
+			<version>9.21.2</version>
+		</dependency>
 <!--		Swagger-->
 		<dependency>
 			<groupId>org.springdoc</groupId>
