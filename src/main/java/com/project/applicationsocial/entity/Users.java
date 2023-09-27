@@ -2,13 +2,12 @@ package com.project.applicationsocial.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.project.applicationsocial.Emun.RoleEnum;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
 import java.sql.Timestamp;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -20,10 +19,9 @@ public class Users {
     private UUID id;
 
     @Column(name = "user_name", unique = true, nullable = false)
-    private String userName;
+    private String username;
 
     @Column(name = "password", nullable = false)
-    @JsonIgnore //mã hóa pasword
     private String password;
 
     @Column(name = "first_name", nullable = false)
@@ -32,8 +30,8 @@ public class Users {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Column(name = "role")
-    private String role;
+    @Column(name = "roles")
+    private RoleEnum roles;
 
     @Column(name = "gender", nullable = false)
     private Boolean gender;
