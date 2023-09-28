@@ -2,7 +2,6 @@ package com.project.applicationsocial.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.project.applicationsocial.Emun.RoleEnum;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -31,7 +30,7 @@ public class Users {
     private String lastName;
 
     @Column(name = "roles")
-    private RoleEnum roles;
+    private String roles;
 
     @Column(name = "gender", nullable = false)
     private Boolean gender;
