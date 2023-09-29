@@ -1,13 +1,12 @@
 package com.project.applicationsocial.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.sql.Timestamp;
-import java.util.Set;
 import java.util.UUID;
+
 
 @Data
 @Entity
@@ -29,6 +28,7 @@ public class Users {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
+//    @Enumerated(EnumType.STRING)
     @Column(name = "roles")
     private String roles;
 

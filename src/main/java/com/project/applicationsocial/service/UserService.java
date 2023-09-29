@@ -34,6 +34,9 @@ public class UserService implements UserDetailsService {
         if(user.getRoles() == null) {
           user.setRoles("USER");
         }
+        if (user.getEnable() == null) {
+            user.setEnable(true);
+        }
         user.setPassword(encoder.encode(user.getPassword()));
         repository.save(user);
         return "User Added Successfully";
