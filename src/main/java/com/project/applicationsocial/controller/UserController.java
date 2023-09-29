@@ -34,13 +34,13 @@ public class UserController {
         return service.addUser(user);
     }
 
-    @GetMapping("/user/userProfile")
+    @GetMapping("/user/profile")
     @PreAuthorize("hasAuthority('USER')")
     public String userProfile() {
         return "Welcome to User Profile";
     }
 
-    @GetMapping("/admin/adminProfile")
+    @GetMapping("/admin/profile")
     @PreAuthorize("hasAuthority('ADMIN')")
     public String adminProfile() {
         return "Welcome to Admin Profile";

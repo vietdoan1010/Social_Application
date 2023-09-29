@@ -48,9 +48,9 @@ public class ServiceConfig{
                         "/login/**",
                         "/swagger-resources/**").permitAll()
                 .and()
-                .authorizeHttpRequests().requestMatchers("/auth/user/**").authenticated()
+                .authorizeHttpRequests().requestMatchers("/auth/user/*").authenticated()
                 .and()
-                .authorizeHttpRequests().requestMatchers("/auth/admin/**").authenticated()
+                .authorizeHttpRequests().requestMatchers("/auth/admin/*").authenticated()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -59,6 +59,8 @@ public class ServiceConfig{
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
+
 
     // Password Encoding
     @Bean
