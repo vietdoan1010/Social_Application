@@ -24,7 +24,7 @@ public class Comments {
     private UUID postID;
 
     @Column(name = "total_like")
-    private Integer totalLike;
+    private Number totalLike;
 
     @Column(name = "created_at")
     private Timestamp createdAt;

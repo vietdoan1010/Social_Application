@@ -3,7 +3,6 @@ package com.project.applicationsocial.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
-import org.w3c.dom.Text;
 
 import java.sql.Timestamp;
 import java.util.UUID;

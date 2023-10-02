@@ -1,12 +1,12 @@
 package com.project.applicationsocial.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Data;
-import org.hibernate.annotations.GenericGenerator;
-import org.springframework.data.repository.cdi.Eager;
 
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.UUID;
 
 @Data
@@ -14,13 +14,12 @@ import java.util.UUID;
 @Table(name = "follows")
 public class Follows {
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "id", columnDefinition = "char(36)")
-    private UUID ID;
-
     @Column(name = "following_user_id")
-    private UUID followUserID;
+    private UUID followingID;
+
+    @Id
+    @Column(name = "followed_user_id")
+    private UUID followedID;
 
     @Column(name = "created_at")
     private Timestamp createdID;

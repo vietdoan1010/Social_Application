@@ -9,5 +9,5 @@ VALUES ('123445','hinhanh', '2023-09-25', '2001-10-10', 'admin001@gmail.com', tr
 
 
 INSERT INTO db_socialapp.users(id,avatar, created_at, date_of_birth, email, enable, first_name, gender, last_name, password, phone_number, updated_at, user_name, roles)
-VALUES ('123446','hinhanh', '2023-09-25', '2001-10-10', 'user1@gmail.com', true, 'viet', false, 'doan', 'user1', '0002', '2023-09-25', 'user1' , 'ADMIN')
+VALUES ('123446','hinhanh', '2023-09-25', '2001-10-10', 'user3@gmail.com', true, 'viet', false, 'doan', 'user3', '0003', '2023-09-25', 'user3' , 'ADMIN')
 

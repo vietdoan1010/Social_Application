@@ -26,5 +26,5 @@ public class Reactions {
     private Integer type;
 
     @Column(name = "created_by")
-    private UUID createdID;
+    private UUID createdBy;
 }
