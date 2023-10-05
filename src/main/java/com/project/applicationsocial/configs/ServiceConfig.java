@@ -1,6 +1,5 @@
 package com.project.applicationsocial.configs;
 
-import com.project.applicationsocial.fillter.JwtAuthFilter;
 import com.project.applicationsocial.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +11,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,9 +23,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 public class ServiceConfig{
 
-    @Autowired
-    private JwtAuthFilter authFilter;
-
 
     // User Creation
     @Bean
@@ -35,38 +30,21 @@ public class ServiceConfig{
         return new UserService();
     }
 
-    @Bean
-    public HttpBasicConfigurer<HttpSecurity> configSwagger(HttpSecurity http) throws Exception {
-        return  http.authorizeRequests()
-                .requestMatchers("/swagger-ui/**","/v3/api-docs/**").permitAll()
-                .anyRequest().authenticated()
-                .and().httpBasic();
-    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/auth/signin","/auth/getAllUser","/auth/addNewUser", "/auth/generateToken","/swagger-ui/**", "/images/**",
-                       "auth/update/{id}",
+                .requestMatchers("/auth/signup","/auth/signin","/swagger-ui/**",
                         "/v3/api-docs/**",
                         "/api-docs/**",
                         "/v2/api-docs/**",
-                        "/home/static/**",
-                        "/actuator/**",
-                        "/static/**",
-                        "/login/**",
                         "/swagger-resources/**").permitAll()
-                .and()
-                .authorizeHttpRequests().requestMatchers("/auth/user/*").authenticated()
-                .and()
-                .authorizeHttpRequests().requestMatchers("/auth/admin/*").authenticated()
+                .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .authenticationProvider(authenticationProvider())
-                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 

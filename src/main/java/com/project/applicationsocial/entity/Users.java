@@ -2,15 +2,21 @@ package com.project.applicationsocial.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.UUID;
 
 
 @Data
 @Entity
 @Table(name = "users")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -28,7 +34,7 @@ public class Users {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-//    @Enumerated(EnumType.STRING)
+    //    @Enumerated(EnumType.STRING)
     @Column(name = "roles")
     private String roles;
 
@@ -58,4 +64,19 @@ public class Users {
     @JsonFormat(pattern = "yyyy/MM/dd")
     @Column(name = "updated_at")
     private Timestamp updatedAt;
+
+
+    public Users(String username, String password, String firstName, String lastName, Boolean gender, String phoneNumber, Timestamp dateOfBirth, String email, String avatar) {
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.phoneNumber = phoneNumber;
+        this.dateOfBirth = dateOfBirth;
+        this.email = email;
+        this.avatar = avatar;
+    }
+
+
 }
