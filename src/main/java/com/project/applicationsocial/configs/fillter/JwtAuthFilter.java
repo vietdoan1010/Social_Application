@@ -1,4 +1,4 @@
-package com.project.applicationsocial.fillter;
+package com.project.applicationsocial.configs.fillter;
 
 import com.project.applicationsocial.service.JwtService;
 import com.project.applicationsocial.service.UserService;
