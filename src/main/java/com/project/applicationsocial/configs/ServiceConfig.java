@@ -38,7 +38,6 @@ public class ServiceConfig{
     @Bean
     public HttpBasicConfigurer<HttpSecurity> configSwagger(HttpSecurity http) throws Exception {
         return  http.authorizeRequests()
-
                 .requestMatchers("/swagger-ui/**","/v3/api-docs/**").permitAll()
                 .anyRequest().authenticated()
                 .and().httpBasic();
@@ -48,7 +47,7 @@ public class ServiceConfig{
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/auth/welcome","/auth/getAllUser","/auth/addNewUser", "/auth/generateToken","/swagger-ui/**", "/images/**",
+                .requestMatchers("/auth/signin","/auth/getAllUser","/auth/addNewUser", "/auth/generateToken","/swagger-ui/**", "/images/**",
                        "auth/update/{id}",
                         "/v3/api-docs/**",
                         "/api-docs/**",

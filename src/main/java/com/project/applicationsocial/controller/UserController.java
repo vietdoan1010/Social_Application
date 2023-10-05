@@ -3,20 +3,30 @@ package com.project.applicationsocial.controller;
 import com.project.applicationsocial.DTO.UserDTO;
 import com.project.applicationsocial.entity.AuthRequest;
 import com.project.applicationsocial.entity.Users;
+import com.project.applicationsocial.payload.repose.JwtReponse;
+import com.project.applicationsocial.payload.request.LoginRequest;
 import com.project.applicationsocial.service.JwtService;
+import com.project.applicationsocial.service.UserDetail;
 import com.project.applicationsocial.service.UserService;
+import com.project.applicationsocial.service.jwt.JwtUtils;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/auth")
@@ -24,20 +34,36 @@ public class UserController {
     @Autowired
     private UserService service;
 
-    @Autowired
-    private JwtService jwtService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @RolesAllowed("USER")
     @GetMapping("/welcome")
     public String welcome() {
         return "Welcome this endpoint is not secure";
     }
 
+
     @PostMapping("/addNewUser")
     public String addNewUser(@RequestBody Users users) {
         return service.addUser(users);
+    }
+
+    @PostMapping(  value = "/signin", consumes = "application/json")
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+         String jwt = JwtUtils.generateJwtToken(authentication);
+
+        UserDetail userDetail  = (UserDetail) authentication.getPrincipal();
+
+          return ResponseEntity.ok().body(new JwtReponse(jwt,
+                  userDetail.getId(),
+                  userDetail.getUsername(),userDetail.getRoles(), userDetail.getFirst_name(), userDetail.getLast_name()));
     }
 
 
@@ -74,13 +100,4 @@ public class UserController {
         return "Welcome to Admin Profile";
     }
 
-    @PostMapping("/generateToken")
-    public ResponseEntity<String> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
-        if (authentication.isAuthenticated()) {
-            return ResponseEntity.status(400).body(jwtService.generateToken(authRequest.getUsername(), authRequest.getPassword()));
-        } else {
-            throw new UsernameNotFoundException("invalid user request !");
-        }
-    }
 }
