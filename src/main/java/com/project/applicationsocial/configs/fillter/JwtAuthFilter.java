@@ -1,6 +1,6 @@
 package com.project.applicationsocial.configs.fillter;
 
-import com.project.applicationsocial.service.JwtService;
+import com.project.applicationsocial.service.jwt.JwtService;
 import com.project.applicationsocial.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

@@ -1,4 +1,4 @@
-package com.project.applicationsocial.service;
+package com.project.applicationsocial.service.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

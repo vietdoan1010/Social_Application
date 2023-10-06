@@ -20,8 +20,6 @@ public class RegisterRequest {
 
     private String lastName;
 
-    private String roles;
-
     private Boolean gender;
 
     private String phoneNumber;

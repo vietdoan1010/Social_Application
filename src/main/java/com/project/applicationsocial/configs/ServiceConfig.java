@@ -35,7 +35,7 @@ public class ServiceConfig{
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/auth/signup","/auth/signin","/swagger-ui/**",
+                .requestMatchers("/auth/**","/swagger-ui/**",
                         "/v3/api-docs/**",
                         "/api-docs/**",
                         "/v2/api-docs/**",

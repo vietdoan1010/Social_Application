@@ -1,7 +1,7 @@
 package com.project.applicationsocial.controller;
 
-import com.project.applicationsocial.DTO.UserDTO;
-import com.project.applicationsocial.entity.Users;
+import com.project.applicationsocial.model.DTO.UserDTO;
+import com.project.applicationsocial.model.entity.Users;
 import com.project.applicationsocial.payload.repose.JwtReponse;
 import com.project.applicationsocial.payload.request.LoginRequest;
 import com.project.applicationsocial.payload.request.RegisterRequest;
@@ -11,9 +11,7 @@ import com.project.applicationsocial.service.UserService;
 import com.project.applicationsocial.service.jwt.JwtUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,8 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -65,7 +63,7 @@ public class UserController {
                 registerRequest.getEmail(),
                 registerRequest.getAvatar());
         String strRoles = user.getRoles();
-        SimpleDateFormat time = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+//        SimpleDateFormat time = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         if (strRoles == null) {
             user.setRoles("USER");
@@ -101,14 +99,11 @@ public class UserController {
     }
 
 
-    //Get user by id
-    @GetMapping("/user/{id}")
-    public ResponseEntity<UserDTO> getUserById (@PathVariable UUID id) {
-        UserDTO userDTO = service.getUserById(id);
-        if(userDTO == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return ResponseEntity.ok(userDTO);
+    @GetMapping("/user/{username}")
+    public ResponseEntity<Optional<Users>> getUserByName(@PathVariable String username) {
+        Optional<Users> user = userRepository.findByUsername(username);
+        return ResponseEntity.ok().body(user);
+
     }
 
     @GetMapping("/getAllUser")
@@ -117,21 +112,12 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-//    @PutMapping("/update/{id}")
-//    public Users updateUser(@PathVariable("id") UUID id, @RequestBody Users users) {
-//        return service.update(id, users);
-//    }
-
-    @GetMapping("/user/profile")
-    @PreAuthorize("hasAuthority('USER')")
-    public String userProfile() {
-        return "Welcome to User Profile";
+    @PutMapping("/update/{id}")
+    public Users updateUser(@PathVariable("id") UUID id, @RequestBody Users users) {
+        return service.update(id, users);
     }
 
-    @GetMapping("/admin/profile")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public String adminProfile() {
-        return "Welcome to Admin Profile";
-    }
+
+
 
 }
