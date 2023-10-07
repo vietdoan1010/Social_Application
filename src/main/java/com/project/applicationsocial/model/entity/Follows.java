@@ -1,10 +1,8 @@
 package com.project.applicationsocial.model.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.sql.Timestamp;
 import java.util.UUID;
@@ -14,13 +12,17 @@ import java.util.UUID;
 @Table(name = "follows")
 public class Follows {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+
     @Column(name = "following_user_id")
     private UUID followingID;
 
-    @Id
-    @Column(name = "followed_user_id")
-    private UUID followedID;
+    @Column(name = "user_id")
+    private UUID userID;
 
     @Column(name = "created_at")
-    private Timestamp createdID;
+    @CreatedDate
+    private Timestamp createdAt;
 }
