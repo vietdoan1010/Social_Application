@@ -1,6 +1,7 @@
 package com.project.applicationsocial.service;
 
 import com.project.applicationsocial.model.DTO.UserDTO;
+import com.project.applicationsocial.model.entity.Follows;
 import com.project.applicationsocial.model.entity.Users;
 
 import java.util.List;
@@ -14,6 +15,8 @@ public interface UserService {
 
     Users update(UUID id, Users user);
 
-    void addFollow(UUID idUser, UUID idFollowing);
+    void addFollow(UUID userID,UUID idFollow);
+
+    void unFollow(UUID userID, UUID idFollow);
 
 }

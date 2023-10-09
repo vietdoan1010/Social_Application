@@ -1,4 +1,4 @@
-package com.project.applicationsocial.model.entity;
+package com.project.applicationsocial.payload.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

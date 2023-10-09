@@ -10,10 +10,23 @@ import java.util.UUID;
 
 @Repository
 public interface FollowRepository extends JpaRepository<Follows,UUID> {
-//    @Query(value = "select * from follows where user_id = cast(?1 as binary(16)) and following_user_id = cast(?2 as binary(16))", nativeQuery = true)
-//    Optional<Follows> findFollowingID(String userLogin,String following);
 
     @Query(value = "select * from follows where user_id = ?1 and following_user_id = ?2", nativeQuery = true)
-    Optional <Follows> findFollowById(UUID userLogin, UUID following);
+    Optional<Follows> findFollowById(UUID userLogin, UUID following);
+
+    @Query(value = "select * from follows where user_id = ?1 ", nativeQuery = true)
+    Optional<Follows> findFollowByIdUser(UUID userLogin);
+
+    @Query(value = "select * from follows where following_user_id = ?1 ", nativeQuery = true)
+    Optional<Follows> findFollowByIdFollow( UUID following);
+
+
+
+
+
+    @Query(value = "delete from follows where user_id = ?1 and following_user_id = ?2", nativeQuery = true)
+    Optional<Follows> deleteFollowById(UUID userLogin, UUID following);
+
+
 
 }

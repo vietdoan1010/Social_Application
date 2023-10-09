@@ -9,18 +9,18 @@ import java.util.UUID;
 
 @Data
 @Entity
+@IdClass(Follows.class)
 @Table(name = "follows")
 public class Follows {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @Column(name = "user_id")
+    private UUID userID;
 
-
+    @Id
     @Column(name = "following_user_id")
     private UUID followingID;
 
-    @Column(name = "user_id")
-    private UUID userID;
 
     @Column(name = "created_at")
     @CreatedDate
