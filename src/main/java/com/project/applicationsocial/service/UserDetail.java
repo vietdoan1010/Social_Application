@@ -1,6 +1,6 @@
 package com.project.applicationsocial.service;
 
-import com.project.applicationsocial.entity.Users;
+import com.project.applicationsocial.model.entity.Users;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

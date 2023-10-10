@@ -1,4 +1,4 @@
-package com.project.applicationsocial.entity;
+package com.project.applicationsocial.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -9,26 +9,35 @@ import java.util.UUID;
 
 @Data
 @Entity
-@Table(name = "comments")
-public class Comments {
+@Table(name = "posts")
+public class Posts {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id", columnDefinition = "char(36)")
     private UUID ID;
 
-    @Column(name = "content")
-    private String content;
+    @Column(name = "title")
+    private String title;
 
-    @Column(name = "post_id")
-    private UUID postID;
+    @Column(name = "body")
+    private String body;
+
+    @Column(name = "status")
+    private String status;
 
     @Column(name = "total_like")
     private Number totalLike;
 
+    @Column(name = "total_comment")
+    private  Number totalComment;
+
+    @Column(name = "created_by")
+    private  UUID createdBy;
+
     @Column(name = "created_at")
     private Timestamp createdAt;
 
-    @Column(name = "created_by")
-    private UUID  createdBy;
+
+
 }

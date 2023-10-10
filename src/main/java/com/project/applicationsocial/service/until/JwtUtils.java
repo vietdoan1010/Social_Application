@@ -1,4 +1,4 @@
-package com.project.applicationsocial.service.jwt;
+package com.project.applicationsocial.service.until;
 
 
 import java.security.Key;
@@ -29,9 +29,12 @@ public class JwtUtils {
         UserDetail userPrincipal = (UserDetail) authentication.getPrincipal();
 
         return Jwts.builder()
+                .setId(userPrincipal.getId().toString())
+                .setAudience(userPrincipal.getUsername())
                 .setSubject((userPrincipal.getUsername()))
                 .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+//                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
                 .signWith(key(), SignatureAlgorithm.HS256)
                 .compact();
     }

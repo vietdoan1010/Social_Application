@@ -1,7 +1,7 @@
-package com.project.applicationsocial.mapper;
+package com.project.applicationsocial.model.mapper;
 
-import com.project.applicationsocial.DTO.UserDTO;
-import com.project.applicationsocial.entity.Users;
+import com.project.applicationsocial.model.DTO.UserDTO;
+import com.project.applicationsocial.model.entity.Users;
 
 public class UserMapper {
     public static UserDTO toUserDTO(Users user) {

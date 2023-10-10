@@ -1,4 +1,4 @@
-package com.project.applicationsocial.DTO;
+package com.project.applicationsocial.model.DTO;
 
 import lombok.Data;
 

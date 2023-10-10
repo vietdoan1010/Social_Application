@@ -11,3 +11,6 @@ VALUES ('123445','hinhanh', '2023-09-25', '2001-10-10', 'admin001@gmail.com', tr
 INSERT INTO db_socialapp.users(id,avatar, created_at, date_of_birth, email, enable, first_name, gender, last_name, password, phone_number, updated_at, user_name, roles)
 VALUES ('123446','hinhanh', '2023-09-25', '2001-10-10', 'user3@gmail.com', true, 'viet', false, 'doan', 'user3', '0003', '2023-09-25', 'user3' , 'ADMIN')
 
+select * from db_socialapp.follows where user_id = '4c8aa85b-4159-4e0f-91e5-ac2fdd23dafc'
+
+select id from follows where user_id ='4c8aa85b-4159-4e0f-91e5-ac2fdd23dafc' and following_user_id = '6a026f64-c3d9-4ecd-b379-b7eab3af2dff'

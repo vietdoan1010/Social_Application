@@ -1,137 +1,75 @@
 package com.project.applicationsocial.controller;
 
-import com.project.applicationsocial.DTO.UserDTO;
-import com.project.applicationsocial.entity.Users;
-import com.project.applicationsocial.payload.repose.JwtReponse;
-import com.project.applicationsocial.payload.request.LoginRequest;
-import com.project.applicationsocial.payload.request.RegisterRequest;
+import com.project.applicationsocial.model.DTO.UserDTO;
+import com.project.applicationsocial.model.entity.Follows;
+import com.project.applicationsocial.model.entity.Users;
 import com.project.applicationsocial.repository.UserRepository;
+import com.project.applicationsocial.service.Impl.AuthenticationImpl;
+import com.project.applicationsocial.service.Impl.UserServiceImpl;
 import com.project.applicationsocial.service.UserDetail;
-import com.project.applicationsocial.service.UserService;
-import com.project.applicationsocial.service.jwt.JwtUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
+import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/user")
 public class UserController {
     @Autowired
-    private UserService service;
+    private UserServiceImpl userService;
 
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    @GetMapping("/{username}")
+    public ResponseEntity<Optional<Users>> getUserByName(@PathVariable String username) {
+        Optional<Users> user = userService.findUserByName(username);
+        return ResponseEntity.ok().body(user);
 
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    PasswordEncoder passwordEncoder;
-    @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest registerRequest) {
-        if (userRepository.existsByUsername(registerRequest.getUsername())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body("Error: Username is already taken!");
-        }
-
-        if (userRepository.existsByEmail(registerRequest.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body("Error: Email is already in use!");
-        }
-
-        Users user = new Users(registerRequest.getUsername(),
-                passwordEncoder.encode(registerRequest.getPassword()),
-                registerRequest.getFirstName(),
-                registerRequest.getLastName(),
-                registerRequest.getGender(),
-                registerRequest.getPhoneNumber(),
-                registerRequest.getDateOfBirth(),
-                registerRequest.getEmail(),
-                registerRequest.getAvatar());
-        String strRoles = user.getRoles();
-        SimpleDateFormat time = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        if (strRoles == null) {
-            user.setRoles("USER");
-        }
-        if (user.getEnable() == null) {
-            user.setEnable(true);
-        }
-        if (user.getCreatedAt() == null) {
-            user.setCreatedAt(timestamp);
-        }
-        if (user.getUpdatedAt() == null) {
-            user.setUpdatedAt(timestamp);
-        }
-        userRepository.save(user);
-
-        return ResponseEntity.ok("User registered successfully!");
-    }
-
-    @PostMapping(  value = "/signin", consumes = "application/json")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-         String jwt = JwtUtils.generateJwtToken(authentication);
-
-        UserDetail userDetail  = (UserDetail) authentication.getPrincipal();
-
-          return ResponseEntity.ok().body(new JwtReponse(jwt,
-                  userDetail.getId(),
-                  userDetail.getUsername(),userDetail.getRoles(), userDetail.getFirst_name(), userDetail.getLast_name()));
-    }
-
-
-    //Get user by id
-    @GetMapping("/user/{id}")
-    public ResponseEntity<UserDTO> getUserById (@PathVariable UUID id) {
-        UserDTO userDTO = service.getUserById(id);
-        if(userDTO == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return ResponseEntity.ok(userDTO);
     }
 
     @GetMapping("/getAllUser")
     public ResponseEntity<?> findAll() {
-        List<UserDTO> user = service.findAllUser();
+        List<UserDTO> user = userService.getAllUser();
         return ResponseEntity.ok(user);
     }
 
-//    @PutMapping("/update/{id}")
-//    public Users updateUser(@PathVariable("id") UUID id, @RequestBody Users users) {
-//        return service.update(id, users);
-//    }
-
-    @GetMapping("/user/profile")
-    @PreAuthorize("hasAuthority('USER')")
-    public String userProfile() {
-        return "Welcome to User Profile";
+    @PutMapping("/update/{id}")
+    public Users updateUser(@PathVariable("id") UUID id, @RequestBody Users users) {
+        return userService.update(id, users);
     }
 
-    @GetMapping("/admin/profile")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public String adminProfile() {
-        return "Welcome to Admin Profile";
+    @PostMapping("/addfollow/{idFl}")
+    public ResponseEntity<?> addFollow(@AuthenticationPrincipal UserDetail userDetail, @PathVariable("idFl") UUID idFl) {
+//        String userName = principal.getName();
+        UUID userId = userDetail.getId();
+//        UUID userName = userDetail.getId();
+        if (userId != idFl) {
+            userService.addFollow(userId, idFl);
+            return ResponseEntity.ok().body("Success Fully");
+
+        }
+        return ResponseEntity.ok().body("Can not Follow");
+
     }
+
+    @RequestMapping(value = "/unFollow/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> unFollow(@AuthenticationPrincipal UserDetail userDetail, @RequestParam("idFlow") UUID idFlow) {
+        UUID userId = userDetail.getId();
+        userService.unFollow(userId, idFlow);
+        return ResponseEntity.ok().body("Success Fully");
+    }
+
+
+
 
 }

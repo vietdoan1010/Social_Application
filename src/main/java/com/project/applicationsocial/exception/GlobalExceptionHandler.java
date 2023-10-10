@@ -1,6 +1,6 @@
 package com.project.applicationsocial.exception;
 
-import com.project.applicationsocial.DTO.UserDTO;
+import com.project.applicationsocial.model.DTO.UserDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

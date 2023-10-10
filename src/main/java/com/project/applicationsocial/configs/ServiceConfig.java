@@ -1,9 +1,9 @@
 package com.project.applicationsocial.configs;
 
-import com.project.applicationsocial.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.project.applicationsocial.service.Impl.UserDetailServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -16,7 +16,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -27,7 +26,7 @@ public class ServiceConfig{
     // User Creation
     @Bean
     public UserDetailsService userDetailsService() {
-        return new UserService();
+        return new UserDetailServiceImpl();
     }
 
 
@@ -35,12 +34,13 @@ public class ServiceConfig{
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/auth/signup","/auth/signin","/swagger-ui/**",
-                        "/v3/api-docs/**",
-                        "/api-docs/**",
-                        "/v2/api-docs/**",
-                        "/swagger-resources/**").permitAll()
-                .anyRequest().authenticated()
+//                .requestMatchers("/auth/**","/swagger-ui/**",
+//                        "/v3/api-docs/**",
+//                        "/api-docs/**",
+//                        "/v2/api-docs/**",
+//                        "/swagger-resources/**").permitAll()
+//                .requestMatchers("/api/**").authenticated()
+                .anyRequest().permitAll()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -68,6 +68,7 @@ public class ServiceConfig{
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
+
 
 
 

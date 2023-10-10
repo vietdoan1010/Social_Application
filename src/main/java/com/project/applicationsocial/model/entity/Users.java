@@ -1,4 +1,4 @@
-package com.project.applicationsocial.entity;
+package com.project.applicationsocial.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;

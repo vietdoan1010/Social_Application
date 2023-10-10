@@ -1,6 +1,7 @@
 package com.project.applicationsocial.repository;
 
-import com.project.applicationsocial.entity.Users;
+import com.project.applicationsocial.model.DTO.UserDTO;
+import com.project.applicationsocial.model.entity.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

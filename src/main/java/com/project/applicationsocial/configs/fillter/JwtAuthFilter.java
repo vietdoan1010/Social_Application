@@ -1,12 +1,13 @@
 package com.project.applicationsocial.configs.fillter;
 
-import com.project.applicationsocial.service.JwtService;
-import com.project.applicationsocial.service.UserService;
+import com.project.applicationsocial.service.Impl.UserDetailServiceImpl;
+import com.project.applicationsocial.service.until.JwtUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,10 +21,11 @@ import java.io.IOException;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Autowired
-     JwtService jwtService;
+    JwtUtils jwtUtils;
+//     JwtService jwtService;
 
     @Autowired
-    UserService userDetailsService;
+    UserDetailServiceImpl userDetailService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException, IOException {
@@ -32,12 +34,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String username = null;
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
-            username = jwtService.extractUsername(token);
+            username = jwtUtils.getUserNameFromJwtToken(token);
         }
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            if (jwtService.validateToken(token, userDetails)) {
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)
+        {
+            UserDetails userDetails = userDetailService.loadUserByUsername(username);
+            if (jwtUtils.validateJwtToken(token)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
