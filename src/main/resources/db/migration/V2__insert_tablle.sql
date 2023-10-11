@@ -13,4 +13,6 @@ VALUES ('123446','hinhanh', '2023-09-25', '2001-10-10', 'user3@gmail.com', true,
 
 select * from db_socialapp.follows where user_id = '4c8aa85b-4159-4e0f-91e5-ac2fdd23dafc'
 
+ALTER TABLE follow ADD created_at datetime(6);
+
 select id from follows where user_id ='4c8aa85b-4159-4e0f-91e5-ac2fdd23dafc' and following_user_id = '6a026f64-c3d9-4ecd-b379-b7eab3af2dff'

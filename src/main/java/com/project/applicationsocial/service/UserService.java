@@ -1,7 +1,6 @@
 package com.project.applicationsocial.service;
 
 import com.project.applicationsocial.model.DTO.UserDTO;
-import com.project.applicationsocial.model.entity.Follows;
 import com.project.applicationsocial.model.entity.Users;
 
 import java.util.List;
