@@ -6,7 +6,10 @@ import com.project.applicationsocial.model.mapper.UserMapper;
 import com.project.applicationsocial.repository.UserRepository;
 import com.project.applicationsocial.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -28,10 +31,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<Users> findUserByName(String name) {
-        return  repository.findByUsername(name);
-    }
+    public Page<Users> searchUserByName(String username, int size) {
 
+        if (!username.isEmpty()) {
+            throw new RuntimeException("Not exists");
+        }
+        return repository.findUserByName(username, PageRequest.of(1, size));
+    }
 
     @Override
     public Users update(UUID id, Users user) {
@@ -41,8 +47,6 @@ public class UserServiceImpl implements UserService {
         }
         return null;
     }
-
-
 
 
     @Override
@@ -86,7 +90,7 @@ public class UserServiceImpl implements UserService {
         Set<Users> listFollowing = user.getListIdFollow();
 
         if (!listFollowing.contains(usersFollow)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND , "User following is not found in list follow");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND , "User following is not found in list followb ");
         }
 
         listFollowing.remove(usersFollow);

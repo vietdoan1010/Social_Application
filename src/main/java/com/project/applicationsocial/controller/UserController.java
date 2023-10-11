@@ -4,13 +4,14 @@ import com.project.applicationsocial.model.DTO.UserDTO;
 import com.project.applicationsocial.model.entity.Users;
 import com.project.applicationsocial.service.Impl.UserServiceImpl;
 import com.project.applicationsocial.service.UserDetail;
+import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -21,10 +22,9 @@ public class UserController {
 
 
     @GetMapping("/{username}")
-    public ResponseEntity<Optional<Users>> getUserByName(@PathVariable String username) {
-        Optional<Users> user = userService.findUserByName(username);
+    public ResponseEntity<?> getUserByName(@PathVariable String username,  @RequestParam int size) {
+        Page<Users> user =  userService.searchUserByName(username, size);
         return ResponseEntity.ok().body(user);
-
     }
 
     @GetMapping("/getAllUser")
