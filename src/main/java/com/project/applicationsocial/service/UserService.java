@@ -5,12 +5,13 @@ import com.project.applicationsocial.model.entity.Users;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public interface UserService {
     List<UserDTO> getAllUser();
 
-    Page<Users> searchUserByName(String username, int size);
+    Page<Users> searchUserByName(String username, Integer size, Integer page, String sort, String field);
 
     Users update(UUID id, Users user);
 

@@ -2,6 +2,7 @@ package com.project.applicationsocial.controller;
 
 import com.project.applicationsocial.model.DTO.UserDTO;
 import com.project.applicationsocial.model.entity.Users;
+import com.project.applicationsocial.payload.repose.PageResponse;
 import com.project.applicationsocial.service.Impl.UserServiceImpl;
 import com.project.applicationsocial.service.UserDetail;
 import jakarta.websocket.server.PathParam;
@@ -11,8 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/user")
@@ -21,10 +21,18 @@ public class UserController {
     private UserServiceImpl userService;
 
 
-    @GetMapping("/{username}")
-    public ResponseEntity<?> getUserByName(@PathVariable String username,  @RequestParam int size) {
-        Page<Users> user =  userService.searchUserByName(username, size);
-        return ResponseEntity.ok().body(user);
+    @GetMapping("/")
+    public ResponseEntity<?> getUserByName(
+            @RequestParam String username, @RequestParam(defaultValue = "3") Integer size,
+            @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "asc") String sort,
+            @RequestParam(defaultValue = "user_name") String field)
+    {
+        Page<Users> user = userService.searchUserByName(username, size, page, sort, field);
+        return ResponseEntity.ok().body(new PageResponse<Users>(
+                user.getNumber(),
+                (int) user.getTotalElements(),
+                user.getSize(),
+                user.getContent()));
     }
 
     @GetMapping("/getAllUser")

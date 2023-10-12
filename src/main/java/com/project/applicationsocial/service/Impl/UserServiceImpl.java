@@ -3,12 +3,12 @@ package com.project.applicationsocial.service.Impl;
 import com.project.applicationsocial.model.DTO.UserDTO;
 import com.project.applicationsocial.model.entity.Users;
 import com.project.applicationsocial.model.mapper.UserMapper;
+import com.project.applicationsocial.payload.repose.PageResponse;
 import com.project.applicationsocial.repository.UserRepository;
 import com.project.applicationsocial.service.UserService;
+import com.project.applicationsocial.service.until.PageUntil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -32,9 +32,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<Users> searchUserByName(String username, int size) {
-        return repository.findUserByName(username, PageRequest
-                .of(0, size, Sort.by("user_name").ascending()));
+    public Page<Users> searchUserByName(String username, Integer size, Integer page, String sort, String field) {
+
+        return repository.findUserByName(username, PageUntil.parse( page,size, field, sort));
     }
 
     @Override
