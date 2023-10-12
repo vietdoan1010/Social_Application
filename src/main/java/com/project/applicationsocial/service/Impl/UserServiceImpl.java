@@ -8,6 +8,7 @@ import com.project.applicationsocial.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -32,11 +33,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<Users> searchUserByName(String username, int size) {
-
-        if (!username.isEmpty()) {
-            throw new RuntimeException("Not exists");
-        }
-        return repository.findUserByName(username, PageRequest.of(1, size));
+        return repository.findUserByName(username, PageRequest
+                .of(0, size, Sort.by("user_name").ascending()));
     }
 
     @Override
