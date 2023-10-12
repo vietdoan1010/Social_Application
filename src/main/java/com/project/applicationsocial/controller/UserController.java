@@ -1,27 +1,18 @@
 package com.project.applicationsocial.controller;
 
 import com.project.applicationsocial.model.DTO.UserDTO;
-import com.project.applicationsocial.model.entity.Follows;
 import com.project.applicationsocial.model.entity.Users;
-import com.project.applicationsocial.repository.UserRepository;
-import com.project.applicationsocial.service.Impl.AuthenticationImpl;
+import com.project.applicationsocial.payload.repose.PageResponse;
 import com.project.applicationsocial.service.Impl.UserServiceImpl;
 import com.project.applicationsocial.service.UserDetail;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
+import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/user")
@@ -30,11 +21,18 @@ public class UserController {
     private UserServiceImpl userService;
 
 
-    @GetMapping("/{username}")
-    public ResponseEntity<Optional<Users>> getUserByName(@PathVariable String username) {
-        Optional<Users> user = userService.findUserByName(username);
-        return ResponseEntity.ok().body(user);
-
+    @GetMapping("/")
+    public ResponseEntity<?> getUserByName(
+            @RequestParam String username, @RequestParam(defaultValue = "3") Integer size,
+            @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "asc") String sort,
+            @RequestParam(defaultValue = "user_name") String field)
+    {
+        Page<Users> user = userService.searchUserByName(username, size, page, sort, field);
+        return ResponseEntity.ok().body(new PageResponse<Users>(
+                user.getNumber(),
+                (int) user.getTotalElements(),
+                user.getSize(),
+                user.getContent()));
     }
 
     @GetMapping("/getAllUser")
@@ -56,16 +54,15 @@ public class UserController {
         if (userId != idFl) {
             userService.addFollow(userId, idFl);
             return ResponseEntity.ok().body("Success Fully");
-
         }
         return ResponseEntity.ok().body("Can not Follow");
 
     }
 
-    @RequestMapping(value = "/unFollow/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> unFollow(@AuthenticationPrincipal UserDetail userDetail, @RequestParam("idFlow") UUID idFlow) {
+    @DeleteMapping(value = "/unFollow/{id}")
+    public ResponseEntity<?> unFollow(@AuthenticationPrincipal UserDetail userDetail, @RequestParam("idUnFlow") UUID idUnFlow) {
         UUID userId = userDetail.getId();
-        userService.unFollow(userId, idFlow);
+        userService.unFollow(userId, idUnFlow);
         return ResponseEntity.ok().body("Success Fully");
     }
 

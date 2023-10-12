@@ -6,9 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 
@@ -64,6 +68,17 @@ public class Users {
     @JsonFormat(pattern = "yyyy/MM/dd")
     @Column(name = "updated_at")
     private Timestamp updatedAt;
+
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "follow",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns =@JoinColumn(name = "following_user_id"))
+       Set<Users> listIdFollow  = new HashSet<>();
+//
+//    @ManyToMany(mappedBy = "listIdUser")
+//    Set<Users> listIdUser = new HashSet<>();
 
 
     public Users(String username, String password, String firstName, String lastName, Boolean gender, String phoneNumber, Timestamp dateOfBirth, String email, String avatar) {

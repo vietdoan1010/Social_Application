@@ -1,17 +1,17 @@
 package com.project.applicationsocial.service;
 
 import com.project.applicationsocial.model.DTO.UserDTO;
-import com.project.applicationsocial.model.entity.Follows;
 import com.project.applicationsocial.model.entity.Users;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.UUID;
 
 public interface UserService {
     List<UserDTO> getAllUser();
 
-    Optional<Users> findUserByName(String name);
+    Page<Users> searchUserByName(String username, Integer size, Integer page, String sort, String field);
 
     Users update(UUID id, Users user);
 
