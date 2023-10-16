@@ -5,7 +5,6 @@ import com.project.applicationsocial.model.entity.Users;
 import com.project.applicationsocial.payload.repose.PageResponse;
 import com.project.applicationsocial.service.Impl.UserServiceImpl;
 import com.project.applicationsocial.service.UserDetail;
-import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +20,7 @@ public class UserController {
     private UserServiceImpl userService;
 
 
-    @GetMapping("/")
+    @GetMapping("/getUserByName")
     public ResponseEntity<?> getUserByName(
             @RequestParam String username, @RequestParam(defaultValue = "3") Integer size,
             @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "asc") String sort,
@@ -48,14 +47,12 @@ public class UserController {
 
     @PostMapping("/addfollow/{idFl}")
     public ResponseEntity<?> addFollow(@AuthenticationPrincipal UserDetail userDetail, @PathVariable("idFl") UUID idFl) {
-//        String userName = principal.getName();
         UUID userId = userDetail.getId();
-//        UUID userName = userDetail.getId();
-        if (userId != idFl) {
-            userService.addFollow(userId, idFl);
-            return ResponseEntity.ok().body("Success Fully");
+        if (userId.equals(idFl)) {
+            return ResponseEntity.badRequest().body("Cannot follow yourself");
         }
-        return ResponseEntity.ok().body("Can not Follow");
+        userService.addFollow(userId, idFl);
+        return ResponseEntity.ok().body("Success Fully");
 
     }
 

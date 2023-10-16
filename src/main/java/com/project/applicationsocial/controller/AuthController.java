@@ -6,7 +6,7 @@ import com.project.applicationsocial.payload.request.LoginRequest;
 import com.project.applicationsocial.payload.request.RegisterRequest;
 import com.project.applicationsocial.repository.UserRepository;
 import com.project.applicationsocial.service.UserDetail;
-import com.project.applicationsocial.service.until.JwtUtils;
+import com.project.applicationsocial.service.until.JwtUntil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -83,7 +83,7 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = JwtUtils.generateJwtToken(authentication);
+        String jwt = JwtUntil.generateJwtToken(authentication);
 
         UserDetail userDetail  = (UserDetail) authentication.getPrincipal();
 
