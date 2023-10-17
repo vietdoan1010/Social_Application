@@ -62,4 +62,8 @@ public class MinIOUntil {
         log.info("upload is sussec ：[{}], urlHost ：[{}]", url, urlHost);
         return new FileUploadReponse(url, urlHost);
     }
+
+    public void removeObject(String bucketName, String objectName) throws Exception {
+        client.removeObject(RemoveObjectArgs.builder().bucket(bucketName).object(objectName).build());
+    }
 }

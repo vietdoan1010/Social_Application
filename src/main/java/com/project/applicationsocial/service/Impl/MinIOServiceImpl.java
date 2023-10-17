@@ -28,4 +28,13 @@ public class MinIOServiceImpl implements MinIOService {
         return response;
 
     }
+
+    @Override
+    public void deleteFile(String objectName, String bucketName) throws Exception {
+        if (StringUtils.isBlank(bucketName)) {
+            bucketName = "images";
+        }
+        minioUtil.removeObject(bucketName, objectName);
+        System.out.println("Delete success");
+    }
 }

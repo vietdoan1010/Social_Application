@@ -8,4 +8,6 @@ import java.io.IOException;
 
 public interface MinIOService {
     FileUploadReponse putObject(MultipartFile file,String bucketName) throws Exception;
+
+    void deleteFile(String objectName, String bucketName) throws  Exception;
 }
