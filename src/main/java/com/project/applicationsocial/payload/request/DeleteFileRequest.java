@@ -1,4 +1,4 @@
-package com.project.applicationsocial.payload.repose;
+package com.project.applicationsocial.payload.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,6 +9,8 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FileUploadReponse {
-    String urlHttp;
+public class DeleteFileRequest {
+    String bucketName;
+    String objectName;
+    UUID idUser;
 }

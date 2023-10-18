@@ -14,6 +14,4 @@ public class MinioProp {
     private String accessKey;
 
     private String secretKey;
-
-    private String filHost;
 }
