@@ -82,8 +82,8 @@ public class FileController {
     }
 
 //    @DeleteMapping(value = "/deleteListFile")
-//    public void getSubscribedPostFeed(@RequestBody ListRequest listRequest, @RequestParam(value= "bucketName") String bucketName) throws Exception {
-//        minIOUntil.deleteListFile(listRequest.getList(), bucketName);
+//    public void deleteListFile(@RequestBody ListRequest listRequest, @RequestParam(value= "bucketName") String bucketName, @AuthenticationPrincipal UserDetail idUser) throws Exception {
+//        minIOUntil.deleteListFile(listRequest.getList(), bucketName,idUser.getId());
 //    }
 
 
