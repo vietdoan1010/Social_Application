@@ -78,23 +78,15 @@ public class MinIOUntil {
         client.removeObject(RemoveObjectArgs.builder().bucket(bucketName).object(objectName).build());
     }
 
-
-     public void removeList(String bucketName) throws Exception{
-         List<DeleteObject> objects = new LinkedList<>();
-
-         Iterable<Result<Item>> listsObjectName = client.listObjects(
-                 ListObjectsArgs.builder().bucket(bucketName).build());
-
-         for (Result<Item> result : listsObjectName) {
-             Item item = result.get();
-             objects.add(new DeleteObject(item.objectName()));
-         }
-
-         Iterable<Result<DeleteError>> deleteError = client.removeObjects(
-                 RemoveObjectsArgs.builder().bucket(bucketName).objects(objects).build());
-         for (Result<DeleteError> delete : deleteError) {
-             DeleteError error = delete.get();
-         }
+     public void deleteListFile(List<String> listFile, String bucketName, UUID idUser) throws Exception {
+        for (String result : listFile) {
+            String [] toArr = result.split("_");
+            String getId = toArr[2];
+            if (!getId.equals(idUser.toString())) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            }
+            client.removeObject(RemoveObjectArgs.builder().bucket(bucketName).object(result).build());
+        }
      }
 
      public InputStream getObject(String buketName, String objectName) throws  Exception{

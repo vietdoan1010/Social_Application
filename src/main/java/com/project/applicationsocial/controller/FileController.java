@@ -2,6 +2,7 @@ package com.project.applicationsocial.controller;
 
 import com.project.applicationsocial.payload.repose.FileUploadReponse;
 import com.project.applicationsocial.payload.request.DeleteFileRequest;
+import com.project.applicationsocial.payload.request.ListRequest;
 import com.project.applicationsocial.payload.request.UploadFileRequest;
 import com.project.applicationsocial.service.Impl.FileServiceImpl;
 
@@ -13,6 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -76,6 +80,12 @@ public class FileController {
         minIOService.deleteFile(new DeleteFileRequest(bucketName,objectName, userId));
         return ResponseEntity.ok().body("Delete Success!");
     }
+
+//    @DeleteMapping(value = "/deleteListFile")
+//    public void getSubscribedPostFeed(@RequestBody ListRequest listRequest, @RequestParam(value= "bucketName") String bucketName) throws Exception {
+//        minIOUntil.deleteListFile(listRequest.getList(), bucketName);
+//    }
+
 
 
 
