@@ -1,7 +1,7 @@
 package com.project.applicationsocial.configs.fillter;
 
 import com.project.applicationsocial.service.Impl.UserDetailServiceImpl;
-import com.project.applicationsocial.service.until.JwtUtils;
+import com.project.applicationsocial.service.until.JwtUntil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +21,7 @@ import java.io.IOException;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Autowired
-    JwtUtils jwtUtils;
+    JwtUntil jwtUtils;
 //     JwtService jwtService;
 
     @Autowired

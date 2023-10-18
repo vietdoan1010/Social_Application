@@ -33,7 +33,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<Users> searchUserByName(String username, Integer size, Integer page, String sort, String field) {
-
         return repository.findUserByName(username, PageUntil.parse( page,size, field, sort));
     }
 
@@ -49,7 +48,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addFollow (UUID userId, UUID idFollow) {
-
         Optional<Users> usersOptional = repository.findById(userId);
         if (usersOptional.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User is not found");
@@ -60,6 +58,7 @@ public class UserServiceImpl implements UserService {
         if (userFollowingOption.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User following is not found");
         }
+
         Users usersFollow = userFollowingOption.get();
         Set<Users> listFollowing = user.getListIdFollow();
 
@@ -88,7 +87,7 @@ public class UserServiceImpl implements UserService {
         Set<Users> listFollowing = user.getListIdFollow();
 
         if (!listFollowing.contains(usersFollow)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND , "User following is not found in list followb ");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND , "User following is not found in list follow");
         }
 
         listFollowing.remove(usersFollow);
