@@ -5,7 +5,6 @@ import com.project.applicationsocial.model.entity.Users;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public interface UserService {

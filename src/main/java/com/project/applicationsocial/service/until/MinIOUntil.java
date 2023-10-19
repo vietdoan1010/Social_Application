@@ -1,12 +1,8 @@
 package com.project.applicationsocial.service.until;
-
 import com.project.applicationsocial.configs.MinioProp;
 import com.project.applicationsocial.payload.repose.FileUploadReponse;
 import com.project.applicationsocial.repository.UserRepository;
 import io.minio.*;
-import io.minio.messages.DeleteError;
-import io.minio.messages.DeleteObject;
-import io.minio.messages.Item;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

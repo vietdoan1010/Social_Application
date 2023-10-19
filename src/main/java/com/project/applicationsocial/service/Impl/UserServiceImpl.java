@@ -3,14 +3,12 @@ package com.project.applicationsocial.service.Impl;
 import com.project.applicationsocial.model.DTO.UserDTO;
 import com.project.applicationsocial.model.entity.Users;
 import com.project.applicationsocial.model.mapper.UserMapper;
-import com.project.applicationsocial.payload.repose.PageResponse;
 import com.project.applicationsocial.repository.UserRepository;
 import com.project.applicationsocial.service.UserService;
 import com.project.applicationsocial.service.until.PageUntil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 

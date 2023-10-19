@@ -1,9 +1,4 @@
 package com.project.applicationsocial.service.until;
-
-import com.project.applicationsocial.model.entity.Users;
-import com.project.applicationsocial.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
