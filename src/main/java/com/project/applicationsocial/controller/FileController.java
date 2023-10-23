@@ -1,5 +1,6 @@
 package com.project.applicationsocial.controller;
-import com.project.applicationsocial.payload.repose.FileUploadReponse;
+import com.project.applicationsocial.exception.ForbiddenException;
+import com.project.applicationsocial.payload.response.ResponseModel;
 import com.project.applicationsocial.payload.request.DeleteFileRequest;
 import com.project.applicationsocial.payload.request.UploadFileRequest;
 import com.project.applicationsocial.service.Impl.FileServiceImpl;
@@ -8,7 +9,6 @@ import com.project.applicationsocial.service.until.MinIOUntil;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,85 +29,104 @@ public class FileController {
 
 
     @PostMapping(value = "/addFileAvt", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<?> addFileAvt(@AuthenticationPrincipal UserDetail userDetail,
+    public ResponseEntity<ResponseModel> addFileAvt(@AuthenticationPrincipal UserDetail userDetail,
                                         @RequestParam(value = "file") MultipartFile file ) throws Exception {
-        try {
-            String bucketName = "avatar";
-            UUID idUser = userDetail.getId();
-            minIOService.addFile(new UploadFileRequest(file, bucketName, idUser));
-            return ResponseEntity.ok().body("Upload avatar success!");
-        }catch (NullPointerException e) {
-           return ResponseEntity.badRequest().body("UnAuthorized");
+
+        ResponseModel<String> responseModel = new ResponseModel<>();
+        if (userDetail == null)    {
+            throw new ForbiddenException("User is need login before upload file");
         }
+        String bucketName = "avatar";
+        UUID idUser = userDetail.getId();
+        minIOService.addFile(new UploadFileRequest(file, bucketName, idUser));
+        responseModel.setData("Upload file success!");
+        responseModel.setCode(200);
+        responseModel.setError(null);
+        return ResponseEntity.ok().body(responseModel);
+
     }
 
     @DeleteMapping("/deleteFileAvt")
-    public ResponseEntity<?> deleteFileAvt(@RequestParam(value = "object") String objectName, @AuthenticationPrincipal UserDetail userDetail) throws Exception {
-       try {
-           String bucketName = "avatar";
-           UUID userId = userDetail.getId();
-           minIOService.deleteFile(new DeleteFileRequest(bucketName,objectName, userId));
-           return ResponseEntity.ok().body("Delete Success!");
-       }catch (NullPointerException e) {
-           return ResponseEntity.badRequest().body("UnAuthorized");
-       }
+    public ResponseEntity<ResponseModel> deleteFileAvt(@RequestParam(value = "object") String objectName, @AuthenticationPrincipal UserDetail userDetail) throws Exception {
+        if (userDetail == null)    {
+            throw new ForbiddenException("User is need login before delete file");
+        }
+        ResponseModel<String> responseModel = new ResponseModel<>();
 
+        String bucketName = "avatar";
+        UUID idUser = userDetail.getId();
+        minIOService.deleteFile(new DeleteFileRequest(bucketName,objectName, idUser));
+        responseModel.setData("Delete file success!");
+        responseModel.setCode(200);
+        responseModel.setError(null);
+        return ResponseEntity.ok().body(responseModel);
     }
 
     @PostMapping(value = "/addFilePost", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<?> addFilePost(@NotNull @AuthenticationPrincipal UserDetail userDetail,
+    public ResponseEntity<ResponseModel> addFilePost( @AuthenticationPrincipal UserDetail userDetail,
                                               @RequestParam(value = "file") MultipartFile file) throws Exception {
-        try {
-            String bucketName = "post";
-            UUID idUser = userDetail.getId();
-            minIOService.addFile(new UploadFileRequest(file, bucketName, idUser));
-            return ResponseEntity.ok().body("Upload avatar success!");
-        }catch (NullPointerException e) {
-            return ResponseEntity.badRequest().body("UnAuthorized");
+        ResponseModel<String> responseModel = new ResponseModel<>();
+        if (userDetail == null)    {
+            throw new ForbiddenException("User is need login before upload file");
         }
+        String bucketName = "post";
+        UUID idUser = userDetail.getId();
+        minIOService.addFile(new UploadFileRequest(file, bucketName, idUser));
+        responseModel.setData("Upload file success!");
+        responseModel.setCode(200);
+        responseModel.setError(null);
+        return ResponseEntity.ok().body(responseModel);
     }
 
     @DeleteMapping("/deleteFilePost")
-    public ResponseEntity<?> deleteFilePost(@RequestParam(value = "object") String objectName, @NotNull @AuthenticationPrincipal UserDetail userDetail) throws Exception {
-        try {
-            String bucketName = "post";
-            UUID userId = userDetail.getId();
-            minIOService.deleteFile(new DeleteFileRequest(bucketName,objectName, userId));
-            return ResponseEntity.ok().body("Delete Success!");
-        }catch (NullPointerException e) {
-            return ResponseEntity.badRequest().body("UnAuthorized");
+    public ResponseEntity<?> deleteFilePost(@RequestParam(value = "object") String objectName, @AuthenticationPrincipal UserDetail userDetail) throws Exception {
+        if (userDetail == null)    {
+            throw new ForbiddenException("User is need login before delete file");
         }
+        ResponseModel<String> responseModel = new ResponseModel<>();
+
+        String bucketName = "post";
+        UUID idUser = userDetail.getId();
+        minIOService.deleteFile(new DeleteFileRequest(bucketName,objectName, idUser));
+        responseModel.setData("Delete file success!");
+        responseModel.setCode(200);
+        responseModel.setError(null);
+        return ResponseEntity.ok().body(responseModel);
     }
 
     @PostMapping(value = "/addFileCmt", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<String> addFileCmt(@NotNull @AuthenticationPrincipal UserDetail userDetail,
+    public ResponseEntity<ResponseModel> addFileCmt( @AuthenticationPrincipal UserDetail userDetail,
                                              @RequestParam(value = "file") MultipartFile file) throws Exception {
-        try {
-            String bucketName = "comment";
-            UUID idUser = userDetail.getId();
-            minIOService.addFile(new UploadFileRequest(file, bucketName, idUser));
-            return ResponseEntity.ok().body("Upload avatar success!");
-        }catch (NullPointerException e) {
-            return ResponseEntity.badRequest().body("UnAuthorized");
+        ResponseModel<String> responseModel = new ResponseModel<>();
+        if (userDetail == null)    {
+            throw new ForbiddenException("User is need login before upload file");
         }
+        String bucketName = "comment";
+        UUID idUser = userDetail.getId();
+        minIOService.addFile(new UploadFileRequest(file, bucketName, idUser));
+        responseModel.setData("Upload file success!");
+        responseModel.setCode(200);
+        responseModel.setError(null);
+        return ResponseEntity.ok().body(responseModel);
     }
 
     @DeleteMapping("/deleteFileCmt")
-    public ResponseEntity<?> deleteFileCmt(@RequestParam(value = "object") String objectName, @NotNull @AuthenticationPrincipal UserDetail userDetail) throws Exception {
-        try {
-            String bucketName = "comment";
-            UUID userId = userDetail.getId();
-            minIOService.deleteFile(new DeleteFileRequest(bucketName,objectName, userId));
-            return ResponseEntity.ok().body("Delete Success!");
-        }catch (NullPointerException e) {
-            return ResponseEntity.badRequest().body("UnAuthorized");
+    public ResponseEntity<?> deleteFileCmt(@RequestParam(value = "object") String objectName,  @AuthenticationPrincipal UserDetail userDetail) throws Exception {
+        if (userDetail == null)    {
+            throw new ForbiddenException("User is need login before delete file");
         }
+        ResponseModel<String> responseModel = new ResponseModel<>();
+
+        String bucketName = "comment";
+        UUID idUser = userDetail.getId();
+        minIOService.deleteFile(new DeleteFileRequest(bucketName,objectName, idUser));
+        responseModel.setData("Delete file success!");
+        responseModel.setCode(200);
+        responseModel.setError(null);
+        return ResponseEntity.ok().body(responseModel);
     }
 
-//    @DeleteMapping(value = "/deleteListFile")
-//    public void deleteListFile(@RequestBody ListRequest listRequest, @RequestParam(value= "bucketName") String bucketName, @AuthenticationPrincipal UserDetail idUser) throws Exception {
-//        minIOUntil.deleteListFile(listRequest.getList(), bucketName,idUser.getId());
-//    }
+
 
 
 

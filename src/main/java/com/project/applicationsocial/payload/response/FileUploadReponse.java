@@ -1,4 +1,4 @@
-package com.project.applicationsocial.payload.repose;
+package com.project.applicationsocial.payload.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

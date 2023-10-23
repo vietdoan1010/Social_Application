@@ -2,7 +2,7 @@ package com.project.applicationsocial.controller;
 
 import com.project.applicationsocial.model.DTO.UserDTO;
 import com.project.applicationsocial.model.entity.Users;
-import com.project.applicationsocial.payload.repose.PageResponse;
+import com.project.applicationsocial.payload.response.PageResponse;
 import com.project.applicationsocial.service.Impl.UserServiceImpl;
 import com.project.applicationsocial.service.UserDetail;
 import org.springframework.beans.factory.annotation.Autowired;

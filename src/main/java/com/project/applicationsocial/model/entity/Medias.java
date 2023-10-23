@@ -1,19 +1,20 @@
 package com.project.applicationsocial.model.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.hibernate.annotations.GenericGenerator;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "medias")
 public class Medias {
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "id", columnDefinition = "char(36)")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID ID;
 
     @Column(name = "base_name")
@@ -22,6 +23,9 @@ public class Medias {
     @Column(name = "public_url")
     private String publicURL;
 
-    @Column(name = "post_id")
-    private UUID postID;
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    private Posts posts;
+
+
 }

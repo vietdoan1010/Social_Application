@@ -1,7 +1,7 @@
 package com.project.applicationsocial.controller;
 
 import com.project.applicationsocial.model.entity.Users;
-import com.project.applicationsocial.payload.repose.JwtReponse;
+import com.project.applicationsocial.payload.response.JwtResponse;
 import com.project.applicationsocial.payload.request.LoginRequest;
 import com.project.applicationsocial.payload.request.RegisterRequest;
 import com.project.applicationsocial.repository.UserRepository;
@@ -88,7 +88,7 @@ public class AuthController {
         UserDetail userDetail  = (UserDetail) authentication.getPrincipal();
 
 
-        return ResponseEntity.ok().body(new JwtReponse(jwt,
+        return ResponseEntity.ok().body(new JwtResponse(jwt,
                 userDetail.getId(),
                 userDetail.getUsername(),userDetail.getRoles(), userDetail.getFirst_name(), userDetail.getLast_name()));
     }
