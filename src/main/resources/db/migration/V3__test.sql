@@ -1,0 +1,1 @@
+select * from db_socialapp.medias where base_name  = 'sql.png'

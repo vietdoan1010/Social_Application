@@ -5,7 +5,7 @@ import com.project.applicationsocial.payload.response.JwtResponse;
 import com.project.applicationsocial.payload.request.LoginRequest;
 import com.project.applicationsocial.payload.request.RegisterRequest;
 import com.project.applicationsocial.repository.UserRepository;
-import com.project.applicationsocial.service.UserDetail;
+import com.project.applicationsocial.service.Impl.UserDetail;
 import com.project.applicationsocial.service.until.JwtUntil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

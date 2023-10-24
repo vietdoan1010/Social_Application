@@ -1,4 +1,4 @@
-package com.project.applicationsocial.service;
+package com.project.applicationsocial.service.Impl;
 
 import com.project.applicationsocial.model.entity.Users;
 import lombok.Data;

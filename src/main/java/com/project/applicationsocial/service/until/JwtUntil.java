@@ -4,7 +4,7 @@ package com.project.applicationsocial.service.until;
 import java.security.Key;
 import java.util.Date;
 
-import com.project.applicationsocial.service.UserDetail;
+import com.project.applicationsocial.service.Impl.UserDetail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;

@@ -2,7 +2,6 @@ package com.project.applicationsocial.service.Impl;
 
 import com.project.applicationsocial.model.entity.Users;
 import com.project.applicationsocial.repository.UserRepository;
-import com.project.applicationsocial.service.UserDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

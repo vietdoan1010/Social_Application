@@ -36,7 +36,7 @@ public class MinIOUntil {
 
     public FileUploadReponse uploadFile(MultipartFile file, String bucketName, UUID idUser) throws Exception {
 
-        if (null == file || 0 == file.getSize()) {
+         if (null == file || 0 == file.getSize()) {
             return null;
         }
         createBucket(bucketName);
