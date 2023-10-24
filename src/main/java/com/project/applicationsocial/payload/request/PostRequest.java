@@ -5,13 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.UUID;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UploadFileRequest {
-    MultipartFile file;
-    String buketName;
-    UUID idUser;
+public class PostRequest {
+    private String title;
+
+    private String body;
+
+    private MultipartFile[] files;
 }

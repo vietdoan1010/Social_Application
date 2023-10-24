@@ -1,8 +1,10 @@
 package com.project.applicationsocial.model.entity;
 
+import com.project.applicationsocial.model.StatusEnum;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.hibernate.annotations.GenericGenerator;
+import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 import java.util.UUID;
@@ -10,11 +12,11 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name = "posts")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Posts {
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "id", columnDefinition = "char(36)")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID ID;
 
     @Column(name = "title")
@@ -24,13 +26,14 @@ public class Posts {
     private String body;
 
     @Column(name = "status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private StatusEnum status;
 
     @Column(name = "total_like")
-    private Number totalLike;
+    private int totalLike;
 
     @Column(name = "total_comment")
-    private  Number totalComment;
+    private  int totalComment;
 
     @Column(name = "created_by")
     private  UUID createdBy;
@@ -39,5 +42,8 @@ public class Posts {
     private Timestamp createdAt;
 
 
-
+    public Posts(String title, String body) {
+        this.title = title;
+        this.body = body;
+    }
 }

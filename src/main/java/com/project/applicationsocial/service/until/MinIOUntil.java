@@ -1,12 +1,9 @@
 package com.project.applicationsocial.service.until;
-
 import com.project.applicationsocial.configs.MinioProp;
-import com.project.applicationsocial.payload.repose.FileUploadReponse;
+import com.project.applicationsocial.exception.NotFoundException;
+import com.project.applicationsocial.payload.response.FileUploadReponse;
 import com.project.applicationsocial.repository.UserRepository;
 import io.minio.*;
-import io.minio.messages.DeleteError;
-import io.minio.messages.DeleteObject;
-import io.minio.messages.Item;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -53,7 +50,7 @@ public class MinIOUntil {
                                 file.getInputStream(), file.getSize(), -1)
                         .contentType(file.getContentType())
                         .build());
-        String url = minioProp.getEndpoint() + "/" + bucketName + "/" + fileName;
+        String url = bucketName + "/" + fileName;
 
         log.info("upload is sussec ：[{}", url);
         return new FileUploadReponse(url);
@@ -62,12 +59,12 @@ public class MinIOUntil {
     public void removeObject(String bucketName, String objectName, UUID idUser) throws Exception {
         boolean found = client.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
         if (!found) {
-            throw new ResponseStatusException( HttpStatus.NOT_FOUND);
+            throw new NotFoundException("Bucket is not found in system!");
         }
 
        InputStream object =  getObject(bucketName, objectName);
         if (object == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new NotFoundException("Object is not found in system!");
         }
 
         String [] toArr = objectName.split("_");
@@ -91,6 +88,33 @@ public class MinIOUntil {
 
      public InputStream getObject(String buketName, String objectName) throws  Exception{
        return client.getObject(GetObjectArgs.builder().bucket(buketName).object(objectName).build());
+     }
+
+
+
+     public List<FileUploadReponse> addListFile(MultipartFile[] listFile, String bucketName, UUID idUser) throws Exception {
+         List url = new ArrayList();
+        for (MultipartFile file : listFile) {
+               if (null == file || 0 == file.getSize()) {
+                   return null;
+               }
+               createBucket(bucketName);
+               String originalFilename = file.getOriginalFilename();
+               assert originalFilename != null;
+               String fileName = bucketName + "_" +
+                       System.currentTimeMillis() + "_" + idUser + "_" + new Random().nextInt(1000) +
+                       originalFilename.substring(originalFilename.lastIndexOf("."));
+               client.putObject(
+                       PutObjectArgs.builder().bucket(bucketName).object(fileName).stream(
+                                       file.getInputStream(), file.getSize(), -1)
+                               .contentType(file.getContentType())
+                               .build());
+               url.add(bucketName + "/" + fileName);
+
+               log.info("upload is sussec ：[{}", url);
+
+           }
+        return url;
      }
 
 }

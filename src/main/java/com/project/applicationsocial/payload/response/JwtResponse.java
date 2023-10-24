@@ -1,4 +1,4 @@
-package com.project.applicationsocial.payload.repose;
+package com.project.applicationsocial.payload.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class JwtReponse {
+public class JwtResponse {
     private String token;
     private UUID id;
     private String username;
