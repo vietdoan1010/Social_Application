@@ -2,6 +2,7 @@ package com.project.applicationsocial.service;
 
 import com.project.applicationsocial.model.entity.Posts;
 import com.project.applicationsocial.payload.request.PostRequest;
+import com.project.applicationsocial.payload.request.UpdatePostRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
@@ -10,5 +11,5 @@ public interface PostService {
     void createPost(PostRequest postRequest,  UUID idUser) throws Exception;
     void deletePost(UUID idPost, UUID idUser) throws Exception;
 
-    void  updatePost(Posts posts, UUID idUser);
+    void  updatePost(UUID idPost, UUID idUser, UpdatePostRequest updateRequest) throws Exception;
 }

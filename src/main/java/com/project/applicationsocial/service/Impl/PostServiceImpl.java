@@ -5,6 +5,7 @@ import com.project.applicationsocial.model.StatusEnum;
 import com.project.applicationsocial.model.entity.Medias;
 import com.project.applicationsocial.model.entity.Posts;
 import com.project.applicationsocial.payload.request.PostRequest;
+import com.project.applicationsocial.payload.request.UpdatePostRequest;
 import com.project.applicationsocial.payload.response.FileUploadReponse;
 import com.project.applicationsocial.repository.MediasRepository;
 import com.project.applicationsocial.repository.PostRepository;
@@ -19,7 +20,6 @@ import java.sql.Timestamp;
 import java.util.*;
 
 @Service
-@Transactional
 public class PostServiceImpl implements PostService {
     @Autowired
     PostRepository postRepository;
@@ -58,6 +58,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public void deletePost(UUID idPost,UUID idUser) throws Exception {
         Optional<Posts> postsOptional = postRepository.findById(idPost);
         if (postsOptional.isEmpty()) {
@@ -78,7 +79,55 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void updatePost(Posts posts, UUID idUser) {
+    @Transactional
+    public void updatePost(UUID idPost, UUID idUser, UpdatePostRequest updateRequest) throws Exception {
+        Optional<Posts> postsOptional = postRepository.findById(idPost);
+        if (postsOptional.isEmpty()) {
+            throw new NotFoundException("Post is not found!");
+        }
+        Posts posts = postsOptional.get();
+        posts.setTitle(updateRequest.getTitle());
+        posts.setBody(updateRequest.getBody());
+        posts.setStatus(updateRequest.getStatus());
+        
+        String bucketName = "post";
+        List<String> urlFilesRemove = updateRequest.getRemoveFile();
+        List<String> fileList = new ArrayList<>();
+        List<Medias> fileMedia = new ArrayList<>();
+
+        if (urlFilesRemove != null) {
+            for (String urlFile : urlFilesRemove) {
+                Medias mediasList = mediasRep.getMediasByPublicURL(urlFile);
+                if (mediasList != null) {
+                    String url = mediasList.getPublicURL();
+                    String [] toArr = url.split("/");
+                    String objectName = toArr[1];
+                    fileList.add(objectName);
+                    fileMedia.add(mediasList);
+                }
+            }
+            mediasRep.deleteAll(fileMedia);
+            minIOUntil.deleteListFile(fileList,bucketName,idUser);
+        }
+
+        if (updateRequest.getAddFile() != null) {
+            MultipartFile[] files = updateRequest.getAddFile();
+            postRepository.save(posts);
+            List<Medias> mediasList = new ArrayList<>();
+            for (MultipartFile file : files) {
+                FileUploadReponse lists =  minIOUntil.uploadFile(file,bucketName, idUser);
+                Medias medias = new Medias();
+                medias.setBaseName(file.getOriginalFilename());
+                medias.setPublicURL(lists.getUrlHttp());
+                medias.setPosts(posts);
+                mediasList.add(medias);
+            }
+            mediasRep.saveAll(mediasList);
+        }
+        postRepository.save(posts);
+
+
 
     }
+
 }

@@ -23,13 +23,13 @@ public class FileServiceImpl implements FileService {
     private MinIOUntil minIOUntil;
 
     @Override
-    public void addFile(@NotNull UploadFileRequest uploadRequest) throws Exception {
+    public void addFile(UploadFileRequest uploadRequest) throws Exception {
         minioUtil.uploadFile(uploadRequest.getFile(),
                 uploadRequest.getBuketName(), uploadRequest.getIdUser());
     }
 
     @Override
-    public void deleteFile(@NotNull DeleteFileRequest deleteRequst) throws Exception {
+    public void deleteFile(DeleteFileRequest deleteRequst) throws Exception {
         minioUtil.removeObject(deleteRequst.getBucketName(),
                 deleteRequst.getObjectName(), deleteRequst.getIdUser());
     }

@@ -15,4 +15,6 @@ public interface MediasRepository extends JpaRepository<Medias, UUID> {
     @Query(value = "select * from medias m where m.post_id = :idPost", nativeQuery = true)
     List<Medias> getMediasByPostID(UUID idPost);
 
+    @Query(value = "select * from medias where public_url = :url", nativeQuery = true)
+    Medias getMediasByPublicURL(String url);
 }
