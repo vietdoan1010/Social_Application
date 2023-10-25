@@ -2,11 +2,11 @@ package com.project.applicationsocial.controller;
 
 import com.project.applicationsocial.exception.ForbiddenException;
 import com.project.applicationsocial.payload.request.PostRequest;
+import com.project.applicationsocial.payload.request.UpdatePostRequest;
 import com.project.applicationsocial.payload.response.ResponseModel;
 import com.project.applicationsocial.service.Impl.PostServiceImpl;
-import com.project.applicationsocial.service.UserDetail;
+import com.project.applicationsocial.service.Impl.UserDetail;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -32,6 +32,30 @@ public class PostController {
         ResponseModel responseModel = new ResponseModel<>();
         responseModel.setCode(200);
         responseModel.setData("Create post is success!");
+        return ResponseEntity.ok().body(responseModel);
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<ResponseModel> deletePost(@AuthenticationPrincipal UserDetail userDetail,@RequestParam("idPost") UUID idPost) throws Exception {
+        if (userDetail == null) {
+            throw new ForbiddenException("User is need login before delete post!");
+        }
+        postService.deletePost(idPost, userDetail.getId());
+        ResponseModel responseModel = new ResponseModel<>();
+        responseModel.setCode(200);
+        responseModel.setData("Delete post is success!");
+        return ResponseEntity.ok().body(responseModel);
+    }
+
+    @PutMapping(value="/update",consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<ResponseModel> updatePost(@AuthenticationPrincipal UserDetail userDetail, @RequestParam("idPost") UUID idPost, @ModelAttribute UpdatePostRequest updateRequest) throws Exception {
+        if (userDetail == null) {
+            throw new ForbiddenException("User is need login before update post!");
+        }
+        postService.updatePost(idPost,userDetail.getId(),updateRequest);
+        ResponseModel responseModel = new ResponseModel<>();
+        responseModel.setCode(200);
+        responseModel.setData("Update post is success!");
         return ResponseEntity.ok().body(responseModel);
     }
 }
