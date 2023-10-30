@@ -1,9 +1,7 @@
 package com.project.applicationsocial.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -23,9 +21,11 @@ public class Medias {
     @Column(name = "public_url")
     private String publicURL;
 
-    @ManyToOne
-    @JoinColumn(name = "post_id")
-    private Posts posts;
+//    @ManyToOne
+//    @JoinColumn(name = "posts_id")
+//    @EqualsAndHashCode.Exclude
+//    @ToString.Exclude
+//    private Posts posts;
 
 
 }

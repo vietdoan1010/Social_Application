@@ -2,12 +2,10 @@ package com.project.applicationsocial.model.entity;
 
 import com.project.applicationsocial.model.StatusEnum;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.sql.Timestamp;
-import java.util.UUID;
+import java.util.*;
 
 @Data
 @Entity
@@ -41,8 +39,12 @@ public class Posts {
     @Column(name = "created_at")
     private Timestamp createdAt;
 
-
-    public Posts(String title, String body) {
+    @OneToMany(fetch = FetchType.EAGER)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JoinColumn(name = "post_id")
+    private List<Medias> medias = new ArrayList<>();
+    public Posts(String title, String body, StatusEnum status) {
         this.title = title;
         this.body = body;
     }

@@ -1,6 +1,6 @@
-select * from db_socialapp.medias where base_name  = 'sql.png';
-delete from medias where  public_url = 'post/post_1698138247463_4c8aa85b-4159-4e0f-91e5-ac2fdd23dafc_824.jpg'
+select * from db_socialapp.posts where id = '389cb2c1-bdf8-4534-9e93-46f741ae14db';
+select * from db_socialapp.posts
+         where unhex(id) = '389cb2c1-bdf8-4534-9e93-46f741ae14db'
+           and status = 'PUBLIC'
 
-select id from medias where public_url = 'post/post_1698138248474_4c8aa85b-4159-4e0f-91e5-ac2fdd23dafc_369.png'
-
-select * from medias where public_url = 'post/post_1698138248474_4c8aa85b-4159-4e0f-91e5-ac2fdd23dafc_369.png'
+select * from medias where post_id = 'd818ddc6-f3b4-4332-ae4c-d156642161c7'
