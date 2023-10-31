@@ -21,4 +21,7 @@ public interface UserRepository extends JpaRepository<Users, UUID> {
 
     @Query(value = "select * from users where user_name like CONCAT('%', :user_name, '%')", nativeQuery = true)
     Page<Users> findUserByName(String user_name, PageRequest pageRequest);
+
+    @Query(value = "select following_user_id from follow where user_id = :id", nativeQuery = true)
+    List<UUID> findAllFolowingByUserId(UUID id);
 }

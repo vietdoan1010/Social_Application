@@ -1,27 +1,20 @@
 package com.project.applicationsocial.controller;
 
 import com.project.applicationsocial.exception.ForbiddenException;
-import com.project.applicationsocial.model.DTO.UserDTO;
 import com.project.applicationsocial.model.entity.Posts;
-import com.project.applicationsocial.model.entity.Users;
 import com.project.applicationsocial.payload.request.PostRequest;
 import com.project.applicationsocial.payload.request.UpdatePostRequest;
-import com.project.applicationsocial.payload.response.PageResponse;
 import com.project.applicationsocial.payload.response.ResponseModel;
 import com.project.applicationsocial.service.Impl.PostServiceImpl;
 import com.project.applicationsocial.service.Impl.UserDetail;
-import com.project.applicationsocial.service.until.PageUntil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 @RestController
@@ -32,12 +25,15 @@ public class PostController {
 
 
     @GetMapping(value = "/getAll")
-    public ResponseEntity<List<Posts>> getAllPost(@AuthenticationPrincipal UserDetail userDetail) {
+    public ResponseEntity<List<Posts>> getAllPost(@AuthenticationPrincipal UserDetail userDetail,
+                                                  @RequestParam(defaultValue = "3") Integer size,
+                                                  @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "desc") String sort,
+                                                  @RequestParam(defaultValue = "createdAt") String field) {
         if (userDetail == null) {
             throw new ForbiddenException("User is need login before posting!");
         }
         UUID id = userDetail.getId();
-        return ResponseEntity.ok().body(postService.getAllPost(id));
+        return ResponseEntity.ok().body(postService.getAllPost(id,page,size, field, sort));
     }
 
     @PostMapping(value = "/create" ,consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })

@@ -47,5 +47,6 @@ public class Posts {
     public Posts(String title, String body, StatusEnum status) {
         this.title = title;
         this.body = body;
+        this.status = status;
     }
 }

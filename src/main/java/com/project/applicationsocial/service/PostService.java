@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public interface PostService {
 
-    List<Posts>getAllPost(UUID idUser);
+    List<Posts>getAllPost(UUID idUser, Integer size, Integer page, String sort, String field);
     void createPost(PostRequest postRequest,  UUID idUser) throws Exception;
     void deletePost(UUID idPost, UUID idUser) throws Exception;
 

@@ -16,7 +16,6 @@ import com.project.applicationsocial.service.until.MinIOUntil;
 import com.project.applicationsocial.service.until.PageUntil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,24 +36,35 @@ public class PostServiceImpl implements PostService {
 
 
     @Override
-    public List<Posts> getAllPost(UUID idUser) {
-        Set<Users> usersFollow = userRep.findById(idUser).get().getListIdFollow();
-
-        if (usersFollow == null) {
+    public List<Posts> getAllPost(UUID idUser, Integer page, Integer size, String field, String sort) {
+        Optional<Users> users = userRep.findById(idUser);
+        if(users.isEmpty()) throw new NotFoundException("User is not found!");
+        List<UUID> usersFollow = new ArrayList<>();
+        for (Users user : users.get().getListIdFollow()) {
+             usersFollow.add(user.getId());
+        }
+        if (usersFollow == null || usersFollow.isEmpty()) {
             throw new NotFoundException("Not found user follow");
         }
+        List<Posts> posts = postRepository.getPostsByCreatedBy(usersFollow, PageUntil.parse( page,size,field, sort));
         List<Posts> postsList = new ArrayList<>();
-        for (Users users :usersFollow) {
-            UUID idFollow = users.getId();
-            postsList = postRepository.getPostsByCreatedBy(idFollow);
+        for (Posts post : posts) {
+            if (post.getStatus() == StatusEnum.PUBLIC) {
+                postsList.add(post);
+            }
         }
+
         return postsList;
     }
 
     @Override
+    @Transactional
     public void createPost(PostRequest postRequest, UUID idUser) throws Exception {
         Posts posts = new Posts(postRequest.getTitle(),
                 postRequest.getBody(), postRequest.getStatus());
+        if (posts.getStatus() == null) {
+            posts.setStatus(StatusEnum.PUBLIC);
+        }
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         if (posts.getCreatedAt() == null) {
             posts.setCreatedAt(timestamp);
