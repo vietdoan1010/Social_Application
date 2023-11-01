@@ -4,13 +4,16 @@ import com.project.applicationsocial.exception.NotFoundException;
 import com.project.applicationsocial.model.StatusEnum;
 import com.project.applicationsocial.model.entity.Medias;
 import com.project.applicationsocial.model.entity.Posts;
+import com.project.applicationsocial.model.entity.Users;
 import com.project.applicationsocial.payload.request.PostRequest;
 import com.project.applicationsocial.payload.request.UpdatePostRequest;
 import com.project.applicationsocial.payload.response.FileUploadReponse;
 import com.project.applicationsocial.repository.MediasRepository;
 import com.project.applicationsocial.repository.PostRepository;
+import com.project.applicationsocial.repository.UserRepository;
 import com.project.applicationsocial.service.PostService;
 import com.project.applicationsocial.service.until.MinIOUntil;
+import com.project.applicationsocial.service.until.PageUntil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,15 +29,36 @@ public class PostServiceImpl implements PostService {
     @Autowired
     MediasRepository mediasRep;
     @Autowired
+    UserRepository userRep;
+    @Autowired
     MinIOUntil minIOUntil;
+
+
     @Override
+    public List<Posts> getAllPost(UUID idUser, Integer page, Integer size, String field, String sort) {
+        Optional<Users> users = userRep.findById(idUser);
+        if(users.isEmpty()) throw new NotFoundException("User is not found!");
+        List<UUID> usersFollow = new ArrayList<>();
+        usersFollow.add(idUser);
+        for (Users user : users.get().getListIdFollow()) {
+             usersFollow.add(user.getId());
+        }
+        if (usersFollow == null || usersFollow.isEmpty()) {
+            throw new NotFoundException("Not found user follow");
+        }
+
+        List<Posts> posts = postRepository.getPostsByCreatedBy(usersFollow, PageUntil.parse( page,size,field, sort));
+        return posts;
+    }
+
+    @Override
+    @Transactional
     public void createPost(PostRequest postRequest, UUID idUser) throws Exception {
         Posts posts = new Posts(postRequest.getTitle(),
-                postRequest.getBody());
+                postRequest.getBody(), postRequest.getStatus());
         if (posts.getStatus() == null) {
             posts.setStatus(StatusEnum.PUBLIC);
         }
-
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         if (posts.getCreatedAt() == null) {
             posts.setCreatedAt(timestamp);
@@ -42,19 +66,22 @@ public class PostServiceImpl implements PostService {
         if (posts.getCreatedBy() == null) {
             posts.setCreatedBy(idUser);
         }
-        String bucketName = "post";
-        MultipartFile[] files = postRequest.getFiles();
-        postRepository.save(posts);
-        List<Medias> mediasList = new ArrayList<>();
-        for (MultipartFile file : files) {
-            FileUploadReponse lists =  minIOUntil.uploadFile(file,bucketName, idUser);
-            Medias medias = new Medias();
-            medias.setBaseName(file.getOriginalFilename());
-            medias.setPublicURL(lists.getUrlHttp());
-            medias.setPosts(posts);
-            mediasList.add(medias);
+        if (postRequest.getFiles() != null) {
+            String bucketName = "post";
+            MultipartFile[] files = postRequest.getFiles();
+            postRepository.save(posts);
+            List<Medias> mediasList = posts.getMedias();
+            for (MultipartFile file : files) {
+                FileUploadReponse lists =  minIOUntil.uploadFile(file,bucketName, idUser);
+                Medias medias = new Medias();
+                medias.setBaseName(file.getOriginalFilename());
+                medias.setPublicURL(lists.getUrlHttp());
+                mediasList.add(medias);
+            }
+            mediasRep.saveAll(mediasList);
         }
-        mediasRep.saveAll(mediasList);
+        postRepository.save(posts);
+
     }
 
     @Override
@@ -119,7 +146,6 @@ public class PostServiceImpl implements PostService {
                 Medias medias = new Medias();
                 medias.setBaseName(file.getOriginalFilename());
                 medias.setPublicURL(lists.getUrlHttp());
-                medias.setPosts(posts);
                 mediasList.add(medias);
             }
             mediasRep.saveAll(mediasList);
