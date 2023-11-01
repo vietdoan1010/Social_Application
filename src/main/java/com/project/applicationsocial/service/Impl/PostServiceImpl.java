@@ -15,7 +15,6 @@ import com.project.applicationsocial.service.PostService;
 import com.project.applicationsocial.service.until.MinIOUntil;
 import com.project.applicationsocial.service.until.PageUntil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,16 +39,20 @@ public class PostServiceImpl implements PostService {
         Optional<Users> users = userRep.findById(idUser);
         if(users.isEmpty()) throw new NotFoundException("User is not found!");
         List<UUID> usersFollow = new ArrayList<>();
+        usersFollow.add(idUser);
         for (Users user : users.get().getListIdFollow()) {
              usersFollow.add(user.getId());
         }
         if (usersFollow == null || usersFollow.isEmpty()) {
             throw new NotFoundException("Not found user follow");
         }
+
         List<Posts> posts = postRepository.getPostsByCreatedBy(usersFollow, PageUntil.parse( page,size,field, sort));
         List<Posts> postsList = new ArrayList<>();
         for (Posts post : posts) {
-            if (post.getStatus() == StatusEnum.PUBLIC) {
+            if (post.getCreatedBy().equals(idUser)) {
+                postsList.add(post);
+            } else if (post.getStatus() == StatusEnum.PUBLIC) {
                 postsList.add(post);
             }
         }
