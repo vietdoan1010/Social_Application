@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public interface PostRepository extends JpaRepository<Posts, UUID> {
-    @Query(value = "select p from Posts p where p.createdBy in :listFolowing")
+    @Query(value = "select p from Posts p where p.createdBy in :listFolowing and p.status = 'PUBLIC'")
     List<Posts> getPostsByCreatedBy(List<UUID> listFolowing, PageRequest pageRequest);
 
 

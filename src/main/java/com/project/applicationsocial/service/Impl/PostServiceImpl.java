@@ -48,16 +48,7 @@ public class PostServiceImpl implements PostService {
         }
 
         List<Posts> posts = postRepository.getPostsByCreatedBy(usersFollow, PageUntil.parse( page,size,field, sort));
-        List<Posts> postsList = new ArrayList<>();
-        for (Posts post : posts) {
-            if (post.getCreatedBy().equals(idUser)) {
-                postsList.add(post);
-            } else if (post.getStatus() == StatusEnum.PUBLIC) {
-                postsList.add(post);
-            }
-        }
-
-        return postsList;
+        return posts;
     }
 
     @Override
