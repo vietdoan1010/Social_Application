@@ -24,6 +24,13 @@ public class CustomExceptionHandler {
     }
 
 
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorRespose handlerBadRequestEx(BadRequestException ex, WebRequest web) {
+        return new ErrorRespose(HttpStatus.BAD_REQUEST,HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+    }
+
+
 
 
 

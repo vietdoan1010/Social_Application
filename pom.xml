@@ -18,8 +18,22 @@
 	</properties>
 
 	<dependencies>
+		<!-- Spring Data Redis -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+			<version>3.1.5</version>
+		</dependency>
 
-<!--		MinIO-->
+		<!-- Lettuce Core (Redis client) -->
+		<dependency>
+			<groupId>io.lettuce</groupId>
+			<artifactId>lettuce-core</artifactId>
+			<version>6.2.6.RELEASE</version>
+		</dependency>
+
+
+		<!--		MinIO-->
 		<dependency>
 			<groupId>io.minio</groupId>
 			<artifactId>minio</artifactId>
