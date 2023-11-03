@@ -4,6 +4,7 @@ import com.project.applicationsocial.model.StatusEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -12,7 +13,7 @@ import java.util.*;
 @Table(name = "posts")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Posts {
+public class Posts implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID ID;

@@ -10,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.*;
 
 @RestController
@@ -19,7 +18,6 @@ public class UserController {
     @Autowired
     private UserServiceImpl userService;
 
-
     @GetMapping("/getUserByName")
     public ResponseEntity<?> getUserByName(
             @RequestParam String username, @RequestParam(defaultValue = "3") Integer size,
@@ -27,7 +25,7 @@ public class UserController {
             @RequestParam(defaultValue = "user_name") String field)
     {
         Page<Users> user = userService.searchUserByName(username, size, page, sort, field);
-        return ResponseEntity.ok().body(new PageResponse<Users>(
+        return ResponseEntity.ok().body(new PageResponse<>(
                 user.getNumber(),
                 (int) user.getTotalElements(),
                 user.getSize(),

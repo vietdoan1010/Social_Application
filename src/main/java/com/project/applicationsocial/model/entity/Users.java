@@ -1,13 +1,13 @@
 package com.project.applicationsocial.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.apache.commons.lang3.builder.HashCodeExclude;
 import org.springframework.data.annotation.CreatedDate;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -16,12 +16,13 @@ import java.util.Set;
 import java.util.UUID;
 
 
-@Data
+
 @Entity
 @Table(name = "users")
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Users {
+public class Users implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -69,16 +70,15 @@ public class Users {
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
-
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @JoinTable(
             name = "follow",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns =@JoinColumn(name = "following_user_id"))
        Set<Users> listIdFollow  = new HashSet<>();
-//
-//    @ManyToMany(mappedBy = "listIdUser")
-//    Set<Users> listIdUser = new HashSet<>();
 
 
     public Users(String username, String password, String firstName, String lastName, Boolean gender, String phoneNumber, Timestamp dateOfBirth, String email, String avatar) {

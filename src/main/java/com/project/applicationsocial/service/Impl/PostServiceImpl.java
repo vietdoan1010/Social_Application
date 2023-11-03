@@ -15,6 +15,7 @@ import com.project.applicationsocial.service.PostService;
 import com.project.applicationsocial.service.until.MinIOUntil;
 import com.project.applicationsocial.service.until.PageUntil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,6 +36,7 @@ public class PostServiceImpl implements PostService {
 
 
     @Override
+    @Cacheable(value = "getAllPost", key = "#idUser")
     public List<Posts> getAllPost(UUID idUser, Integer page, Integer size, String field, String sort) {
         Optional<Users> users = userRep.findById(idUser);
         if(users.isEmpty()) throw new NotFoundException("User is not found!");
