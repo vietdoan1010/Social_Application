@@ -22,4 +22,6 @@ public interface PostService {
 
     void addComment(UUID idUser, UUID idPost, String content);
     void removeComment(UUID idUser, UUID idPost, UUID idCmt);
+    void updateComment(UUID idUser, UUID idPost, UUID idCmt,String content);
+
 }

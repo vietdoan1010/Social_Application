@@ -209,4 +209,26 @@ public class PostServiceImpl implements PostService {
         }
     }
 
+    @Override
+    @Transactional
+    public void updateComment(UUID idUser, UUID idCmt, UUID idPost,String content) {
+        Optional<Posts> postsOptional = postRepository.findById(idPost);
+        if (postsOptional.isEmpty()) {
+            throw new NotFoundException("Post is not found!");
+        }
+        Optional<Comments> commentsOptional = commentsRep.findById(idCmt);
+        if (commentsOptional.isEmpty()) {
+            throw new NotFoundException("Comment is not found!");
+        }
+        Comments comment = commentsOptional.get();
+        comment.setContent(content);
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        if (comment.getCreatedAt() == null) {
+            comment.setCreatedAt(timestamp);
+        }
+        commentsRep.save(comment);
+
+
+    }
+
 }

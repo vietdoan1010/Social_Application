@@ -77,7 +77,7 @@ public class PostController {
     }
 
 
-    @PostMapping(value = "/idPost/addCmt",consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    @PostMapping(value = "/comment/create",consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<?> addComment(@AuthenticationPrincipal UserDetail userDetail,
                                         @ModelAttribute CommentRequest commentRequest) throws Exception {
         if (userDetail == null) {
@@ -90,10 +90,10 @@ public class PostController {
         return ResponseEntity.ok().body(responseModel);
     }
 
-    @DeleteMapping(value = "removeCmt")
+    @DeleteMapping(value = "/comment/remove/{idCmt}")
     public ResponseEntity<?> removeComment(@AuthenticationPrincipal UserDetail userDetail,
-                                           @RequestParam("idPost") UUID idPost,
-                                           @RequestParam("idCmt") UUID idCmt
+                                           @PathVariable(name = "idPost") UUID idPost,
+                                           @PathVariable(name = "idCmt") UUID idCmt
                                            ) {
         if (userDetail == null) {
             throw new ForbiddenException("User is need login before comment post!");
@@ -102,6 +102,26 @@ public class PostController {
         ResponseModel responseModel = new ResponseModel<>();
         responseModel.setCode(200);
         responseModel.setData("Remove comment is success!");
+        return ResponseEntity.ok().body(responseModel);
+    }
+
+    @PutMapping(value = "/comment/update/{idCmt}",consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<?> updateComment(@AuthenticationPrincipal UserDetail userDetail,
+                                           @PathVariable(name = "idCmt") UUID idCmt,
+                                           @ModelAttribute CommentRequest commentRequest
+    ) {
+        if (userDetail == null) {
+            throw new ForbiddenException("User is need login before comment post!");
+        }
+        postService.updateComment(
+                userDetail.getId(),
+                idCmt,
+                commentRequest.getPostID(),
+                commentRequest.getContent()
+        );
+        ResponseModel responseModel = new ResponseModel<>();
+        responseModel.setCode(200);
+        responseModel.setData("Update comment is success!");
         return ResponseEntity.ok().body(responseModel);
     }
  }

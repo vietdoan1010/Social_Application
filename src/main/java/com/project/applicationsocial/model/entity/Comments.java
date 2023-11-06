@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -26,6 +27,7 @@ public class Comments implements Serializable {
     @Column(name = "total_like")
     private int totalLike;
 
+    @CreatedDate
     @Column(name = "created_at")
     private Timestamp createdAt;
 
