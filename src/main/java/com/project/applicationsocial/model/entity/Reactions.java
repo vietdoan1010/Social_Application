@@ -11,9 +11,7 @@ import java.util.UUID;
 @Table(name = "reactions")
 public class Reactions {
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "id", columnDefinition = "char(36)")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID ID;
 
     @Column(name = "object_type")

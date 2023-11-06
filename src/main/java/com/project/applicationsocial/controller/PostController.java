@@ -2,6 +2,7 @@ package com.project.applicationsocial.controller;
 
 import com.project.applicationsocial.exception.ForbiddenException;
 import com.project.applicationsocial.model.entity.Posts;
+import com.project.applicationsocial.payload.request.CommentRequest;
 import com.project.applicationsocial.payload.request.PostRequest;
 import com.project.applicationsocial.payload.request.UpdatePostRequest;
 import com.project.applicationsocial.payload.response.ResponseModel;
@@ -74,4 +75,33 @@ public class PostController {
         responseModel.setData("Update post is success!");
         return ResponseEntity.ok().body(responseModel);
     }
-}
+
+
+    @PostMapping(value = "/idPost/addCmt",consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<?> addComment(@AuthenticationPrincipal UserDetail userDetail,
+                                        @ModelAttribute CommentRequest commentRequest) throws Exception {
+        if (userDetail == null) {
+            throw new ForbiddenException("User is need login before comment post!");
+        }
+        postService.addComment(userDetail.getId(), commentRequest.getPostID(), commentRequest.getContent());
+        ResponseModel responseModel = new ResponseModel<>();
+        responseModel.setCode(200);
+        responseModel.setData("Comment post is success!");
+        return ResponseEntity.ok().body(responseModel);
+    }
+
+    @DeleteMapping(value = "removeCmt")
+    public ResponseEntity<?> removeComment(@AuthenticationPrincipal UserDetail userDetail,
+                                           @RequestParam("idPost") UUID idPost,
+                                           @RequestParam("idCmt") UUID idCmt
+                                           ) {
+        if (userDetail == null) {
+            throw new ForbiddenException("User is need login before comment post!");
+        }
+        postService.removeComment(userDetail.getId(), idPost, idCmt);
+        ResponseModel responseModel = new ResponseModel<>();
+        responseModel.setCode(200);
+        responseModel.setData("Remove comment is success!");
+        return ResponseEntity.ok().body(responseModel);
+    }
+ }

@@ -1,5 +1,6 @@
 package com.project.applicationsocial.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.applicationsocial.model.StatusEnum;
 import jakarta.persistence.*;
 import lombok.*;
@@ -45,6 +46,14 @@ public class Posts implements Serializable {
     @ToString.Exclude
     @JoinColumn(name = "post_id")
     private List<Medias> medias = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JoinColumn(name = "post_id")
+    private List<Comments> comments = new ArrayList<>();
+
+
     public Posts(String title, String body, StatusEnum status) {
         this.title = title;
         this.body = body;
