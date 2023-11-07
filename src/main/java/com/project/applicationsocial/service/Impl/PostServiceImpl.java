@@ -205,7 +205,7 @@ public class PostServiceImpl implements PostService {
             post.setTotalComment(post.getComments().size() - 1);
             postRepository.save(post);
         }else {
-            throw new ForbiddenException("Haven't to Author!");
+            throw new ForbiddenException("Not the Author!");
         }
     }
 

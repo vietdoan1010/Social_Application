@@ -37,4 +37,21 @@ public class ReactionController {
         responseModel.setData("Create react is success!");
         return ResponseEntity.ok().body(responseModel);
     }
+
+
+    @DeleteMapping(value = "/delete/{objectID}")
+    public ResponseEntity<?> deleteReact(@AuthenticationPrincipal UserDetail userDetail,
+                                         @PathVariable(name = "objectID") UUID objectID)
+    {
+        if (userDetail == null) {
+            throw new ForbiddenException("User is need login before posting!");
+        }
+
+        UUID id = userDetail.getId();
+        reactionService.removeReaction(id, objectID);
+        ResponseModel responseModel = new ResponseModel<>();
+        responseModel.setCode(200);
+        responseModel.setData("Delete react is success!");
+        return ResponseEntity.ok().body(responseModel);
+    }
 }

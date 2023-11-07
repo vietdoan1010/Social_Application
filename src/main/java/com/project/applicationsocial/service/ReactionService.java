@@ -6,5 +6,6 @@ import java.util.UUID;
 
 public interface ReactionService {
     void createReaction(UUID idUser, ReactRequest request);
-    void removeReaction();
+    void removeReaction(UUID userID, UUID objectID);
+
 }

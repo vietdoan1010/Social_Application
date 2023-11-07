@@ -1,5 +1,6 @@
 package com.project.applicationsocial.service.Impl;
 
+import com.project.applicationsocial.exception.ForbiddenException;
 import com.project.applicationsocial.exception.NotFoundException;
 import com.project.applicationsocial.model.ENUM.ObjectTypeEnum;
 import com.project.applicationsocial.model.entity.Comments;
@@ -69,7 +70,29 @@ public class ReactionServiceImpl implements ReactionService {
     }
 
     @Override
-    public void removeReaction() {
+    @Transactional
+    public void removeReaction(UUID userID, UUID objectID) {
+        Reactions reaction = reactionRep.getReactByCreatedByAndObjectID(userID,objectID);
+        if (reaction == null) {
+            throw new NotFoundException("Reaction is not found!");
+        }
+        if (!(reaction.getCreatedBy().equals(userID))) {
+            throw new ForbiddenException("Not the Author!");
+        }
 
+        if (reaction.getObjectType() == ObjectTypeEnum.CMT) {
+            Optional<Comments> commentsOp = commentsRep.findById(objectID);
+            Comments comment = commentsOp.get();
+            comment.setTotalLike(comment.getTotalLike()-1);
+            commentsRep.save(comment);
+            reactionRep.delete(reaction);
+            return;
+        }
+
+        Optional<Posts> postsOp = postRep.findById(objectID);
+        Posts post = postsOp.get();
+        post.setTotalLike(post.getTotalLike()-1);
+        postRep.save(post);
+        reactionRep.delete(reaction);
     }
 }
