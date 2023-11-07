@@ -2,11 +2,13 @@ package com.project.applicationsocial.controller;
 
 import com.project.applicationsocial.exception.ForbiddenException;
 import com.project.applicationsocial.model.entity.Posts;
+import com.project.applicationsocial.payload.request.CommentRequest;
 import com.project.applicationsocial.payload.request.PostRequest;
 import com.project.applicationsocial.payload.request.UpdatePostRequest;
 import com.project.applicationsocial.payload.response.ResponseModel;
 import com.project.applicationsocial.service.Impl.PostServiceImpl;
 import com.project.applicationsocial.service.Impl.UserDetail;
+import com.project.applicationsocial.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
@@ -21,7 +23,7 @@ import java.util.UUID;
 @RequestMapping("/post")
 public class PostController {
     @Autowired
-    PostServiceImpl postService;
+    PostService postService;
 
 
     @GetMapping(value = "/getAll")
@@ -74,4 +76,53 @@ public class PostController {
         responseModel.setData("Update post is success!");
         return ResponseEntity.ok().body(responseModel);
     }
-}
+
+
+    @PostMapping(value = "/comment/create",consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<?> addComment(@AuthenticationPrincipal UserDetail userDetail,
+                                        @ModelAttribute CommentRequest commentRequest) throws Exception {
+        if (userDetail == null) {
+            throw new ForbiddenException("User is need login before comment post!");
+        }
+        postService.addComment(userDetail.getId(), commentRequest.getPostID(), commentRequest.getContent());
+        ResponseModel responseModel = new ResponseModel<>();
+        responseModel.setCode(200);
+        responseModel.setData("Comment post is success!");
+        return ResponseEntity.ok().body(responseModel);
+    }
+
+    @DeleteMapping(value = "/comment/remove/{idCmt}")
+    public ResponseEntity<?> removeComment(@AuthenticationPrincipal UserDetail userDetail,
+                                           @PathVariable(name = "idPost") UUID idPost,
+                                           @PathVariable(name = "idCmt") UUID idCmt
+                                           ) {
+        if (userDetail == null) {
+            throw new ForbiddenException("User is need login before comment post!");
+        }
+        postService.removeComment(userDetail.getId(), idPost, idCmt);
+        ResponseModel responseModel = new ResponseModel<>();
+        responseModel.setCode(200);
+        responseModel.setData("Remove comment is success!");
+        return ResponseEntity.ok().body(responseModel);
+    }
+
+    @PutMapping(value = "/comment/update/{idCmt}",consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<?> updateComment(@AuthenticationPrincipal UserDetail userDetail,
+                                           @PathVariable(name = "idCmt") UUID idCmt,
+                                           @ModelAttribute CommentRequest commentRequest
+    ) {
+        if (userDetail == null) {
+            throw new ForbiddenException("User is need login before comment post!");
+        }
+        postService.updateComment(
+                userDetail.getId(),
+                idCmt,
+                commentRequest.getPostID(),
+                commentRequest.getContent()
+        );
+        ResponseModel responseModel = new ResponseModel<>();
+        responseModel.setCode(200);
+        responseModel.setData("Update comment is success!");
+        return ResponseEntity.ok().body(responseModel);
+    }
+ }

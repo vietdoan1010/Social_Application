@@ -1,8 +1,10 @@
 package com.project.applicationsocial.service;
 
 import com.project.applicationsocial.model.entity.Posts;
+import com.project.applicationsocial.payload.request.CommentRequest;
 import com.project.applicationsocial.payload.request.PostRequest;
 import com.project.applicationsocial.payload.request.UpdatePostRequest;
+import org.flywaydb.core.FlywayExecutor;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -17,4 +19,9 @@ public interface PostService {
     void deletePost(UUID idPost, UUID idUser) throws Exception;
 
     void  updatePost(UUID idPost, UUID idUser, UpdatePostRequest updateRequest) throws Exception;
+
+    void addComment(UUID idUser, UUID idPost, String content);
+    void removeComment(UUID idUser, UUID idPost, UUID idCmt);
+    void updateComment(UUID idUser, UUID idPost, UUID idCmt,String content);
+
 }

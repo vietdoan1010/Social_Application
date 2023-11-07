@@ -1,34 +1,38 @@
 package com.project.applicationsocial.model.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.annotation.CreatedDate;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.UUID;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "comments")
-public class Comments {
+public class Comments implements Serializable {
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "id", columnDefinition = "char(36)")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID ID;
 
     @Column(name = "content")
     private String content;
 
-    @Column(name = "post_id")
-    private UUID postID;
-
     @Column(name = "total_like")
-    private Number totalLike;
+    private int totalLike;
 
+    @CreatedDate
     @Column(name = "created_at")
     private Timestamp createdAt;
 
     @Column(name = "created_by")
     private UUID  createdBy;
+
+
 }

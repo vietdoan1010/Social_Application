@@ -5,6 +5,7 @@ import com.project.applicationsocial.model.entity.Users;
 import com.project.applicationsocial.payload.response.PageResponse;
 import com.project.applicationsocial.service.Impl.UserServiceImpl;
 import com.project.applicationsocial.service.Impl.UserDetail;
+import com.project.applicationsocial.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ import java.util.*;
 @RequestMapping("/api/user")
 public class UserController {
     @Autowired
-    private UserServiceImpl userService;
+    private UserService userService;
 
     @GetMapping("/getUserByName")
     public ResponseEntity<?> getUserByName(

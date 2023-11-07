@@ -1,13 +1,16 @@
 package com.project.applicationsocial.service.Impl;
 
+import com.project.applicationsocial.exception.ForbiddenException;
 import com.project.applicationsocial.exception.NotFoundException;
-import com.project.applicationsocial.model.StatusEnum;
+import com.project.applicationsocial.model.ENUM.StatusEnum;
+import com.project.applicationsocial.model.entity.Comments;
 import com.project.applicationsocial.model.entity.Medias;
 import com.project.applicationsocial.model.entity.Posts;
 import com.project.applicationsocial.model.entity.Users;
 import com.project.applicationsocial.payload.request.PostRequest;
 import com.project.applicationsocial.payload.request.UpdatePostRequest;
 import com.project.applicationsocial.payload.response.FileUploadReponse;
+import com.project.applicationsocial.repository.CommentsRepository;
 import com.project.applicationsocial.repository.MediasRepository;
 import com.project.applicationsocial.repository.PostRepository;
 import com.project.applicationsocial.repository.UserRepository;
@@ -31,6 +34,8 @@ public class PostServiceImpl implements PostService {
     MediasRepository mediasRep;
     @Autowired
     UserRepository userRep;
+    @Autowired
+    CommentsRepository commentsRep;
     @Autowired
     MinIOUntil minIOUntil;
 
@@ -156,6 +161,72 @@ public class PostServiceImpl implements PostService {
 
 
 
+    }
+
+    @Override
+    @Transactional
+    public void addComment(UUID idUser, UUID idPost, String content)  {
+        Optional<Posts> postsOptional = postRepository.findById(idPost);
+        if (postsOptional.isEmpty()) {
+            throw new NotFoundException("Post is not found!");
+        }
+        Posts post = postsOptional.get();
+        Comments comments = new Comments();
+        comments.setCreatedBy(idUser);
+        comments.setContent(content);
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        if (comments.getCreatedAt() == null) {
+            comments.setCreatedAt(timestamp);
+        }
+
+        List<Comments> commentList = post.getComments();
+        commentsRep.save(comments);
+        commentList.add(comments);
+        post.setComments(commentList);
+        post.setTotalComment(post.getComments().size());
+        postRepository.save(post);
+    }
+
+    @Override
+    @Transactional
+    public void removeComment(UUID idUser, UUID idPost, UUID idCmt)  {
+        Optional<Posts> postsOptional = postRepository.findById(idPost);
+        if (postsOptional.isEmpty()) {
+            throw new NotFoundException("Post is not found!");
+        }
+        Posts post = postsOptional.get();
+        Optional<Comments> commentsOptional = commentsRep.findById(idCmt);
+        if (commentsOptional.isEmpty()) {
+            throw new NotFoundException("Comment is not found!");
+        }
+        Comments comment = commentsOptional.get();
+        if (comment.getCreatedBy().equals(idUser)) {
+            commentsRep.delete(comment);
+            post.setTotalComment(post.getComments().size() - 1);
+            postRepository.save(post);
+        }else {
+            throw new ForbiddenException("Not the Author!");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void updateComment(UUID idUser, UUID idCmt, UUID idPost,String content) {
+        Optional<Posts> postsOptional = postRepository.findById(idPost);
+        if (postsOptional.isEmpty()) {
+            throw new NotFoundException("Post is not found!");
+        }
+        Optional<Comments> commentsOptional = commentsRep.findById(idCmt);
+        if (commentsOptional.isEmpty()) {
+            throw new NotFoundException("Comment is not found!");
+        }
+        Comments comment = commentsOptional.get();
+        comment.setContent(content);
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        if (comment.getCreatedAt() == null) {
+            comment.setCreatedAt(timestamp);
+        }
+        commentsRep.save(comment);
     }
 
 }
