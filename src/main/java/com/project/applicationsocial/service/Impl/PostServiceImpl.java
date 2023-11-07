@@ -2,7 +2,7 @@ package com.project.applicationsocial.service.Impl;
 
 import com.project.applicationsocial.exception.ForbiddenException;
 import com.project.applicationsocial.exception.NotFoundException;
-import com.project.applicationsocial.model.StatusEnum;
+import com.project.applicationsocial.model.ENUM.StatusEnum;
 import com.project.applicationsocial.model.entity.Comments;
 import com.project.applicationsocial.model.entity.Medias;
 import com.project.applicationsocial.model.entity.Posts;
@@ -227,8 +227,6 @@ public class PostServiceImpl implements PostService {
             comment.setCreatedAt(timestamp);
         }
         commentsRep.save(comment);
-
-
     }
 
 }

@@ -1,6 +1,6 @@
 package com.project.applicationsocial.payload.request;
 
-import com.project.applicationsocial.model.StatusEnum;
+import com.project.applicationsocial.model.ENUM.StatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

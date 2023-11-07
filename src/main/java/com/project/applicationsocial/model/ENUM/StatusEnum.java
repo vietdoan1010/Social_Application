@@ -1,4 +1,4 @@
-package com.project.applicationsocial.model;
+package com.project.applicationsocial.model.ENUM;
 
 public enum StatusEnum {
     PRIVATE("PRIVATE"),

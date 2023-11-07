@@ -1,7 +1,6 @@
 package com.project.applicationsocial.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.project.applicationsocial.model.StatusEnum;
+import com.project.applicationsocial.model.ENUM.StatusEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
