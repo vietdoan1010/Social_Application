@@ -4,6 +4,7 @@ import com.project.applicationsocial.model.entity.Users;
 import com.project.applicationsocial.payload.request.LoginRequest;
 import com.project.applicationsocial.payload.request.RegisterRequest;
 import com.project.applicationsocial.service.Impl.UserServiceImpl;
+import com.project.applicationsocial.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class AuthController {
 
 
     @Autowired
-    UserServiceImpl userService;
+    UserService userService;
 
     @Autowired
     PasswordEncoder passwordEncoder;

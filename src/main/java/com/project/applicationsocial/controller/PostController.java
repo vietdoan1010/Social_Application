@@ -8,6 +8,7 @@ import com.project.applicationsocial.payload.request.UpdatePostRequest;
 import com.project.applicationsocial.payload.response.ResponseModel;
 import com.project.applicationsocial.service.Impl.PostServiceImpl;
 import com.project.applicationsocial.service.Impl.UserDetail;
+import com.project.applicationsocial.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
@@ -22,7 +23,7 @@ import java.util.UUID;
 @RequestMapping("/post")
 public class PostController {
     @Autowired
-    PostServiceImpl postService;
+    PostService postService;
 
 
     @GetMapping(value = "/getAll")

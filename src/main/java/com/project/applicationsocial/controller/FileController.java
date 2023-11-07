@@ -3,6 +3,7 @@ import com.project.applicationsocial.exception.ForbiddenException;
 import com.project.applicationsocial.payload.response.ResponseModel;
 import com.project.applicationsocial.payload.request.DeleteFileRequest;
 import com.project.applicationsocial.payload.request.UploadFileRequest;
+import com.project.applicationsocial.service.FileService;
 import com.project.applicationsocial.service.Impl.FileServiceImpl;
 import com.project.applicationsocial.service.Impl.UserDetail;
 import com.project.applicationsocial.service.until.MinIOUntil;
@@ -21,7 +22,7 @@ import java.util.UUID;
 @RequestMapping("/file")
 public class FileController {
     @Autowired
-    private FileServiceImpl minIOService;
+    private FileService minIOService;
 
     @Autowired
     private MinIOUntil minIOUntil;

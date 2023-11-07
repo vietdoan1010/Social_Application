@@ -5,6 +5,7 @@ import com.project.applicationsocial.payload.request.ReactRequest;
 import com.project.applicationsocial.payload.response.ResponseModel;
 import com.project.applicationsocial.service.Impl.ReactionServiceImpl;
 import com.project.applicationsocial.service.Impl.UserDetail;
+import com.project.applicationsocial.service.ReactionService;
 import org.apache.catalina.startup.ClassLoaderFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.Repository;
@@ -19,7 +20,7 @@ import java.util.UUID;
 @RequestMapping("/react")
 public class ReactionController {
     @Autowired
-    ReactionServiceImpl reactionService;
+    ReactionService reactionService;
     @PostMapping(value = "/create",consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<?> createReact(@AuthenticationPrincipal UserDetail userDetail,
                                          @ModelAttribute ReactRequest request

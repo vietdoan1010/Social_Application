@@ -52,7 +52,6 @@ public class ReactionServiceImpl implements ReactionService {
             return;
         }
 
-
         Optional<Posts> postsOptional = postRep.findById(request.getObjectID());
         if (postsOptional.isEmpty()) {
             throw new NotFoundException("Post is not found!");
