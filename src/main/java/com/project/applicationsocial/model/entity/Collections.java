@@ -21,12 +21,16 @@ public class Collections {
     @Column(name = "collect_name")
     private String collectName;
 
-    @OneToMany(mappedBy = "collections", cascade = CascadeType.ALL)
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
+    @Column(name = "user_id")
+    private UUID userID;
+
+    @OneToMany(fetch =FetchType.EAGER)
+    @JoinColumn(name = "collection_id")
     private List<Favorites> favorites = new ArrayList<>();
 
-    public Collections(String collectName) {
+    public Collections(String collectName, UUID userID, List<Favorites> favorites) {
         this.collectName = collectName;
+        this.userID = userID;
+        this.favorites = favorites;
     }
 }
