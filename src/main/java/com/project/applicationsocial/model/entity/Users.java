@@ -10,11 +10,7 @@ import org.springframework.data.annotation.CreatedDate;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
+import java.util.*;
 
 
 @Entity
@@ -79,7 +75,6 @@ public class Users implements Serializable {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns =@JoinColumn(name = "following_user_id"))
        Set<Users> listIdFollow  = new HashSet<>();
-
 
     public Users(String username, String password, String firstName, String lastName, Boolean gender, String phoneNumber, Timestamp dateOfBirth, String email, String avatar) {
         this.username = username;
