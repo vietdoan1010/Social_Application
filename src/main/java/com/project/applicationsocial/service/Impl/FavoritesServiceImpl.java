@@ -11,7 +11,9 @@ import com.project.applicationsocial.repository.PostRepository;
 import com.project.applicationsocial.repository.UserRepository;
 import com.project.applicationsocial.service.FavoritesService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -31,6 +33,8 @@ public class FavoritesServiceImpl implements FavoritesService {
     UserRepository userRep;
 
     @Override
+    @Transactional
+    @CacheEvict(value = "collections", allEntries = true)
     public void addFavorites(UUID userID, UUID postID, String collectName) {
         Optional<Posts> postsOptional = postRep.findById(postID);
         if (postsOptional.isEmpty()) {
@@ -46,7 +50,7 @@ public class FavoritesServiceImpl implements FavoritesService {
         }
         favoriesRep.save(favorites);
         if (collectionDB == null) {
-            List<Favorites> favoritesList = collectionDB.getFavorites();
+            List<Favorites> favoritesList = new ArrayList<>();
             favoritesList.add(favorites);
             Collections collection = new Collections(collectName,userID, favoritesList);
             collectionsRep.save(collection);
@@ -61,6 +65,8 @@ public class FavoritesServiceImpl implements FavoritesService {
     }
 
     @Override
+    @Transactional
+    @CacheEvict(value = "collections", allEntries = true)
     public void removeFavorites(UUID userID, UUID postID) {
         Optional<Posts> postsOptional = postRep.findById(postID);
         if (postsOptional.isEmpty()) {
@@ -71,7 +77,6 @@ public class FavoritesServiceImpl implements FavoritesService {
         if (favorite == null) {
             throw new NotFoundException("Favorites is not found!");
         }
-
         favoriesRep.delete(favorite);
     }
 

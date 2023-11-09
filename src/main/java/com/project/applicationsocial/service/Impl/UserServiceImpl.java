@@ -48,6 +48,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
+    @CacheEvict(value = "users", allEntries = true)
     public Users registerUser(RegisterRequest request) {
         if (repository.existsByUsername(request.getUsername())) {
             throw new BadRequestException("Error: User name is already in use!");
@@ -114,7 +115,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @CacheEvict(value = "users",key = "#user.id")
+    @CacheEvict(value = "users", allEntries = true)
     public Users update(UUID id, Users user) {
         Optional<Users> user1 = repository.findById(id);
         if(user1.isPresent()){

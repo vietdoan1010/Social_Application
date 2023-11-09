@@ -18,6 +18,7 @@ import com.project.applicationsocial.service.PostService;
 import com.project.applicationsocial.service.until.MinIOUntil;
 import com.project.applicationsocial.service.until.PageUntil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +42,7 @@ public class PostServiceImpl implements PostService {
 
 
     @Override
-    @Cacheable(value = "getAllPost", key = "#idUser")
+    @Cacheable(value = "posts")
     public List<Posts> getAllPost(UUID idUser, Integer page, Integer size, String field, String sort) {
         Optional<Users> users = userRep.findById(idUser);
         if(users.isEmpty()) throw new NotFoundException("User is not found!");
@@ -60,6 +61,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "posts", allEntries = true)
     public void createPost(PostRequest postRequest, UUID idUser) throws Exception {
         Posts posts = new Posts(postRequest.getTitle(),
                 postRequest.getBody(), postRequest.getStatus());
@@ -93,6 +95,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "posts", allEntries = true)
     public void deletePost(UUID idPost,UUID idUser) throws Exception {
         Optional<Posts> postsOptional = postRepository.findById(idPost);
         if (postsOptional.isEmpty()) {
@@ -114,6 +117,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "posts", allEntries = true)
     public void updatePost(UUID idPost, UUID idUser, UpdatePostRequest updateRequest) throws Exception {
         Optional<Posts> postsOptional = postRepository.findById(idPost);
         if (postsOptional.isEmpty()) {
@@ -165,6 +169,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "posts", allEntries = true)
     public void addComment(UUID idUser, UUID idPost, String content)  {
         Optional<Posts> postsOptional = postRepository.findById(idPost);
         if (postsOptional.isEmpty()) {
@@ -189,6 +194,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "posts", allEntries = true)
     public void removeComment(UUID idUser, UUID idPost, UUID idCmt)  {
         Optional<Posts> postsOptional = postRepository.findById(idPost);
         if (postsOptional.isEmpty()) {
@@ -211,6 +217,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "posts", allEntries = true)
     public void updateComment(UUID idUser, UUID idCmt, UUID idPost,String content) {
         Optional<Posts> postsOptional = postRepository.findById(idPost);
         if (postsOptional.isEmpty()) {

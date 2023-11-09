@@ -12,6 +12,7 @@ import com.project.applicationsocial.repository.PostRepository;
 import com.project.applicationsocial.repository.ReactionRepository;
 import com.project.applicationsocial.service.ReactionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,7 @@ public class ReactionServiceImpl implements ReactionService {
     ReactionRepository reactionRep;
     @Override
     @Transactional
+    @CacheEvict(value = "posts", allEntries = true)
     public void createReaction(UUID idUser, ReactRequest request) {
         Reactions reactions = new Reactions(request.getObjectType(),
                 request.getObjectID(), request.getType());
@@ -71,6 +73,7 @@ public class ReactionServiceImpl implements ReactionService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "posts", allEntries = true)
     public void removeReaction(UUID userID, UUID objectID) {
         Reactions reaction = reactionRep.getReactByCreatedByAndObjectID(userID,objectID);
         if (reaction == null) {
