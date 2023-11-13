@@ -19,9 +19,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/getUserByName")
-    public ResponseEntity<?> getUserByName(
-            @RequestParam String username, @RequestParam(defaultValue = "3") Integer size,
+    @GetMapping("/search")
+    public ResponseEntity<?> searchUserByName(
+            @RequestParam(name = "username") String username, @RequestParam(defaultValue = "3") Integer size,
             @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "asc") String sort,
             @RequestParam(defaultValue = "user_name") String field)
     {
@@ -33,7 +33,7 @@ public class UserController {
                 user.getContent()));
     }
 
-    @GetMapping("/getAllUser")
+    @GetMapping("/list")
     public ResponseEntity<?> findAll() {
         List<UserDTO> user = userService.getAllUser();
         return ResponseEntity.ok(user);
@@ -44,7 +44,7 @@ public class UserController {
         return userService.update(id, users);
     }
 
-    @PostMapping("/addfollow/{idFl}")
+    @PostMapping("/follow/{idFl}")
     public ResponseEntity<?> addFollow(@AuthenticationPrincipal UserDetail userDetail, @PathVariable("idFl") UUID idFl) {
         UUID userId = userDetail.getId();
         if (userId.equals(idFl)) {

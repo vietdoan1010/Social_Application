@@ -38,6 +38,8 @@ public class PostServiceImpl implements PostService {
     @Autowired
     CommentsRepository commentsRep;
     @Autowired
+    NotificationsServiceImpl notificationsService;
+    @Autowired
     MinIOUntil minIOUntil;
 
 
@@ -170,7 +172,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     @CacheEvict(value = "posts", allEntries = true)
-    public void addComment(UUID idUser, UUID idPost, String content)  {
+    public void addComment(UUID idUser, UUID idPost, String content, String fullName)  {
         Optional<Posts> postsOptional = postRepository.findById(idPost);
         if (postsOptional.isEmpty()) {
             throw new NotFoundException("Post is not found!");
@@ -190,6 +192,12 @@ public class PostServiceImpl implements PostService {
         post.setComments(commentList);
         post.setTotalComment(post.getComments().size());
         postRepository.save(post);
+
+        UUID toUser = post.getCreatedBy();
+        if (toUser.equals(idUser)) {
+            String message = fullName + " has comment with your post";
+            notificationsService.createNotifi(idUser, toUser,message, timestamp);
+        }
     }
 
     @Override

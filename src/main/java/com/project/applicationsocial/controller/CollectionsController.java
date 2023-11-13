@@ -16,13 +16,13 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/collections")
+@RequestMapping("/api/collections")
 public class CollectionsController {
 
     @Autowired
     CollectionsService collectionsService;
 
-    @GetMapping("/all")
+    @GetMapping
     public List<Collections> getAllCollections(@AuthenticationPrincipal UserDetail userDetail) {
         if (userDetail == null) {
             throw new ForbiddenException("User is need login before posting!");
@@ -30,17 +30,17 @@ public class CollectionsController {
         return  collectionsService.getAllCollections(userDetail.getId());
     }
 
-    @PutMapping("/update")
+    @PutMapping("/update/name/{newName}")
     public ResponseEntity<?> updateCollectionName(@AuthenticationPrincipal UserDetail userDetail,
-                                                  @RequestParam(name = "collectionName") String collectionName,
-                                                  @RequestParam(name = "newNameCollection") String newNameCollection)
+                                                  @PathVariable(name = "collectionName") String name,
+                                                  @PathVariable(name = "newNameCollection") String newName)
     {
         if (userDetail == null) {
             throw new ForbiddenException("User is need login before update name collection!");
         }
 
         UUID id = userDetail.getId();
-        collectionsService.updateCollectionName(userDetail.getId(),collectionName, newNameCollection);
+        collectionsService.updateCollectionName(userDetail.getId(),name, newName);
         ResponseModel responseModel = new ResponseModel<>();
         responseModel.setCode(200);
         responseModel.setData("Update name to collection successfully!!");

@@ -117,8 +117,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @CacheEvict(value = "users", allEntries = true)
     public Users update(UUID id, Users user) {
-        Optional<Users> user1 = repository.findById(id);
-        if(user1.isPresent()){
+        Optional<Users> usersOptional = repository.findById(id);
+        if(usersOptional.isPresent()){
             return repository.save(user);
         }
         throw new NotFoundException("User is not found in system");
