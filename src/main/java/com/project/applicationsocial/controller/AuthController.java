@@ -2,8 +2,7 @@ package com.project.applicationsocial.controller;
 
 import com.project.applicationsocial.model.entity.Users;
 import com.project.applicationsocial.payload.request.LoginRequest;
-import com.project.applicationsocial.payload.request.RegisterRequest;
-import com.project.applicationsocial.service.Impl.UserServiceImpl;
+import com.project.applicationsocial.payload.request.UserRequest;
 import com.project.applicationsocial.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +24,8 @@ public class AuthController {
     @Autowired
     PasswordEncoder passwordEncoder;
     @PostMapping("/signup")
-    public Users registerUser(@Valid @RequestBody RegisterRequest registerRequest) {
-        return userService.registerUser(registerRequest);
+    public Users registerUser(@Valid @RequestBody UserRequest userRequest) {
+        return userService.registerUser(userRequest);
     }
 
     @PostMapping(  value = "/signin", consumes = "application/json")

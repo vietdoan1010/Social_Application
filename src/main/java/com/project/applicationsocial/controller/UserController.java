@@ -1,16 +1,22 @@
 package com.project.applicationsocial.controller;
 
+import com.project.applicationsocial.exception.ForbiddenException;
 import com.project.applicationsocial.model.DTO.UserDTO;
 import com.project.applicationsocial.model.entity.Users;
+import com.project.applicationsocial.payload.request.UserRequest;
 import com.project.applicationsocial.payload.response.PageResponse;
-import com.project.applicationsocial.service.Impl.UserServiceImpl;
 import com.project.applicationsocial.service.Impl.UserDetail;
 import com.project.applicationsocial.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.*;
 
 @RestController
@@ -39,9 +45,22 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @PutMapping("/update/{id}")
-    public Users updateUser(@PathVariable("id") UUID id, @RequestBody Users users) {
-        return userService.update(id, users);
+    @PutMapping(value = "/update/{id}")
+    public Users updateUser(@AuthenticationPrincipal UserDetail userDetail,@PathVariable("id") UUID id,@RequestBody UserRequest userRequest) throws Exception {
+        if (userDetail == null) {
+            throw new ForbiddenException("User is need login before update your info!");
+        }
+        return userService.update(id, userRequest);
+    }
+
+    @PutMapping(value = "/update/avt", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @Transactional
+    public ResponseEntity<?> updateAvt(@AuthenticationPrincipal UserDetail userDetail, @RequestParam(value = "file") MultipartFile file) throws Exception {
+        if (userDetail == null) {
+            throw new ForbiddenException("User is need login before update your info!");
+        }
+        userService.updateAvt(userDetail.getId(), file);
+        return ResponseEntity.ok().body("Success Fully");
     }
 
     @PostMapping("/follow/{idFl}")

@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/post")
+@RequestMapping("/api/post")
 public class PostController {
     @Autowired
     PostService postService;
@@ -53,8 +53,8 @@ public class PostController {
         return ResponseEntity.ok().body(responseModel);
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<ResponseModel> deletePost(@AuthenticationPrincipal UserDetail userDetail,@RequestParam("idPost") UUID idPost) throws Exception {
+    @DeleteMapping("/delete/{idPost}")
+    public ResponseEntity<ResponseModel> deletePost(@AuthenticationPrincipal UserDetail userDetail,@PathVariable(name = "idPost") UUID idPost) throws Exception {
         if (userDetail == null) {
             throw new ForbiddenException("User is need login before delete post!");
         }
@@ -65,8 +65,8 @@ public class PostController {
         return ResponseEntity.ok().body(responseModel);
     }
 
-    @PutMapping(value="/update",consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<ResponseModel> updatePost(@AuthenticationPrincipal UserDetail userDetail, @RequestParam("idPost") UUID idPost, @ModelAttribute UpdatePostRequest updateRequest) throws Exception {
+    @PutMapping(value="/update/{idPost}",consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<ResponseModel> updatePost(@AuthenticationPrincipal UserDetail userDetail, @PathVariable(name = "idPost") UUID idPost, @ModelAttribute UpdatePostRequest updateRequest) throws Exception {
         if (userDetail == null) {
             throw new ForbiddenException("User is need login before update post!");
         }

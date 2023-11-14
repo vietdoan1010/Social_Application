@@ -4,12 +4,10 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import org.apache.commons.lang3.builder.HashCodeExclude;
-import org.springframework.data.annotation.CreatedDate;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.util.*;
 
 
@@ -76,7 +74,7 @@ public class Users implements Serializable {
             inverseJoinColumns =@JoinColumn(name = "following_user_id"))
        Set<Users> listIdFollow  = new HashSet<>();
 
-    public Users(String username, String password, String firstName, String lastName, Boolean gender, String phoneNumber, Timestamp dateOfBirth, String email, String avatar) {
+    public Users(String username, String password, String firstName, String lastName, Boolean gender, String phoneNumber, Timestamp dateOfBirth, String email) {
         this.username = username;
         this.password = password;
         this.firstName = firstName;
@@ -85,7 +83,6 @@ public class Users implements Serializable {
         this.phoneNumber = phoneNumber;
         this.dateOfBirth = dateOfBirth;
         this.email = email;
-        this.avatar = avatar;
     }
 
 
