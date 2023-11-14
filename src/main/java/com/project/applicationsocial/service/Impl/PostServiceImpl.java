@@ -10,10 +10,7 @@ import com.project.applicationsocial.model.entity.Users;
 import com.project.applicationsocial.payload.request.PostRequest;
 import com.project.applicationsocial.payload.request.UpdatePostRequest;
 import com.project.applicationsocial.payload.response.FileUploadReponse;
-import com.project.applicationsocial.repository.CommentsRepository;
-import com.project.applicationsocial.repository.MediasRepository;
-import com.project.applicationsocial.repository.PostRepository;
-import com.project.applicationsocial.repository.UserRepository;
+import com.project.applicationsocial.repository.*;
 import com.project.applicationsocial.service.PostService;
 import com.project.applicationsocial.service.until.MinIOUntil;
 import com.project.applicationsocial.service.until.PageUntil;
@@ -39,6 +36,9 @@ public class PostServiceImpl implements PostService {
     CommentsRepository commentsRep;
     @Autowired
     NotificationsServiceImpl notificationsService;
+    @Autowired
+    FavoriesRepository favoriesRep;
+
     @Autowired
     MinIOUntil minIOUntil;
 
@@ -112,9 +112,14 @@ public class PostServiceImpl implements PostService {
             String objectName = toArr[1];
             fileList.add(objectName);
         }
-        mediasRep.deleteAll(mediasOptional);
-        postRepository.deleteById(idPost);
         minIOUntil.deleteListFile(fileList,bucketName, idUser);
+        postRepository.deleteById(idPost);
+        List<Comments> commentsList = commentsRep.findCommentsByPostID(idPost);
+        if (favoriesRep.findById(idPost).isPresent()) {
+            favoriesRep.deleteById(idPost);
+        }
+        commentsRep.deleteAll(commentsList);
+        mediasRep.deleteAll(mediasOptional);
     }
 
     @Override
@@ -153,7 +158,7 @@ public class PostServiceImpl implements PostService {
         if (updateRequest.getAddFile() != null) {
             MultipartFile[] files = updateRequest.getAddFile();
             postRepository.save(posts);
-            List<Medias> mediasList = new ArrayList<>();
+            List<Medias> mediasList = posts.getMedias();
             for (MultipartFile file : files) {
                 FileUploadReponse lists =  minIOUntil.uploadFile(file,bucketName, idUser);
                 Medias medias = new Medias();
@@ -164,9 +169,6 @@ public class PostServiceImpl implements PostService {
             mediasRep.saveAll(mediasList);
         }
         postRepository.save(posts);
-
-
-
     }
 
     @Override
