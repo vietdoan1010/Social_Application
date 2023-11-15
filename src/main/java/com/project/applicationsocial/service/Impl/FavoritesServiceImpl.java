@@ -40,10 +40,8 @@ public class FavoritesServiceImpl implements FavoritesService {
         if (postsOptional.isEmpty()) {
             throw new NotFoundException("Post is not found!");
         }
-
         Collections collectionDB = collectionsRep.getCollectionsByNameAndAndUserID(userID, collectName);
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-
         Favorites favorites = new Favorites(postID,userID);
         if (favorites.getCreatedAt() == null) {
             favorites.setCreatedAt(timestamp);

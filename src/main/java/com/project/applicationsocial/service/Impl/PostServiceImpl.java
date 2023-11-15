@@ -92,7 +92,6 @@ public class PostServiceImpl implements PostService {
             mediasRep.saveAll(mediasList);
         }
         postRepository.save(posts);
-
     }
 
     @Override

@@ -36,7 +36,6 @@ public class ReactionServiceImpl implements ReactionService {
         Reactions reactions = new Reactions(request.getObjectType(),
                 request.getObjectID(), request.getType());
         reactions.setCreatedBy(idUser);
-
         if (request.getObjectType().equals(ObjectTypeEnum.CMT)) {
             Optional<Comments> commentsOp = commentsRep.findById(request.getObjectID());
             if (commentsOp.isEmpty()) {
@@ -54,12 +53,12 @@ public class ReactionServiceImpl implements ReactionService {
             }
             return;
         }
-
         Optional<Posts> postsOptional = postRep.findById(request.getObjectID());
         if (postsOptional.isEmpty()) {
             throw new NotFoundException("Post is not found!");
         }
         Reactions reaction = reactionRep.getReactByCreatedByAndObjectID(idUser, request.getObjectID());
+
         if (reaction == null) {
             Posts post = postsOptional.get();
             post.setTotalLike(+1);
@@ -82,7 +81,6 @@ public class ReactionServiceImpl implements ReactionService {
         if (!(reaction.getCreatedBy().equals(userID))) {
             throw new ForbiddenException("Not the Author!");
         }
-
         if (reaction.getObjectType() == ObjectTypeEnum.CMT) {
             Optional<Comments> commentsOp = commentsRep.findById(objectID);
             Comments comment = commentsOp.get();
@@ -91,7 +89,6 @@ public class ReactionServiceImpl implements ReactionService {
             reactionRep.delete(reaction);
             return;
         }
-
         Optional<Posts> postsOp = postRep.findById(objectID);
         Posts post = postsOp.get();
         post.setTotalLike(post.getTotalLike()-1);

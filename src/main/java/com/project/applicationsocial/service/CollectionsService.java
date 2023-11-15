@@ -9,4 +9,5 @@ public interface CollectionsService {
     List<Collections> getAllCollections(UUID userID);
 
     void updateCollectionName(UUID userID,String collectionName, String newNameCollection);
+    void deleteCollection(UUID userID,UUID collectionID);
 }

@@ -1,5 +1,6 @@
 package com.project.applicationsocial.service.Impl;
 
+import com.project.applicationsocial.exception.ForbiddenException;
 import com.project.applicationsocial.exception.NotFoundException;
 import com.project.applicationsocial.model.entity.Collections;
 import com.project.applicationsocial.repository.CollectionsRepository;
@@ -10,6 +11,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -35,5 +37,21 @@ public class CollectionsServiceImpl implements CollectionsService {
         }
         collection.setCollectName(newNameCollection);
         collectionsRep.save(collection);
+    }
+
+    @Override
+    @CacheEvict(value = "collections", allEntries = true)
+    public void deleteCollection(UUID userID, UUID collectionID) {
+        Optional<Collections> collectionsOptional = collectionsRep.findById(collectionID);
+
+        if (collectionsOptional.isEmpty()) {
+            throw new NotFoundException("Collection is not found!");
+        }
+        Collections collection = collectionsOptional.get();
+        if (!collection.getUserID().equals(userID)) {
+            throw new ForbiddenException("No permissions granted!");
+        }
+        collectionsRep.delete(collection);
+
     }
 }

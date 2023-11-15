@@ -60,7 +60,6 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException("Error: Email is already in use!");
         }
 
-
         Users user = new Users(userRequest.getUsername(),
                 passwordEncoder.encode(userRequest.getPassword()),
                 userRequest.getFirstName(),
@@ -68,7 +67,8 @@ public class UserServiceImpl implements UserService {
                 userRequest.getGender(),
                 userRequest.getPhoneNumber(),
                 userRequest.getDateOfBirth(),
-                userRequest.getEmail());
+                userRequest.getEmail()
+        );
         String strRoles = user.getRoles();
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         if (strRoles == null) {
@@ -89,7 +89,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<?> login(LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
+                        loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = JwtUntil.generateJwtToken(authentication);
@@ -97,7 +98,8 @@ public class UserServiceImpl implements UserService {
         UserDetail userDetail  = (UserDetail) authentication.getPrincipal();
         return ResponseEntity.ok().body(new JwtResponse(jwt,
                 userDetail.getId(),
-                userDetail.getUsername(),userDetail.getRoles(), userDetail.getFirst_name(), userDetail.getLast_name()));
+                userDetail.getUsername(),userDetail.getRoles(),
+                userDetail.getFirst_name(), userDetail.getLast_name()));
     }
 
     @Override

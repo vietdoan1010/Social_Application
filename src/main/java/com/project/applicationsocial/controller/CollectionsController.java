@@ -46,4 +46,20 @@ public class CollectionsController {
         responseModel.setData("Update name to collection successfully!!");
         return ResponseEntity.ok().body(responseModel);
     }
+
+    @DeleteMapping("/delete/{collectionID}")
+    public ResponseEntity<?> updateCollectionName(@AuthenticationPrincipal UserDetail userDetail,
+                                                  @PathVariable(value = "collectionID") UUID collectionID)
+    {
+        if (userDetail == null) {
+            throw new ForbiddenException("User is need login before update name collection!");
+        }
+
+        UUID id = userDetail.getId();
+        collectionsService.deleteCollection(id,collectionID);
+        ResponseModel responseModel = new ResponseModel<>();
+        responseModel.setCode(200);
+        responseModel.setData("Delete to collection successfully!!");
+        return ResponseEntity.ok().body(responseModel);
+    }
 }
