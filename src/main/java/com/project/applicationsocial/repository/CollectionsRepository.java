@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.UUID;
 
 public interface CollectionsRepository extends JpaRepository<Collections, UUID> {
+
+    List<Collections> getCollectionsByUserID(UUID userID);
     @Query(value = "select * from collections where user_id =:userID and collect_name=:collectName", nativeQuery = true)
     Collections getCollectionsByNameAndAndUserID(UUID userID, String collectName);
 }

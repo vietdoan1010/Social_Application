@@ -20,7 +20,7 @@ public interface PostService {
 
     void  updatePost(UUID idPost, UUID idUser, UpdatePostRequest updateRequest) throws Exception;
 
-    void addComment(UUID idUser, UUID idPost, String content);
+    void addComment(UUID idUser, UUID idPost, String content, String fullName);
     void removeComment(UUID idUser, UUID idPost, UUID idCmt);
     void updateComment(UUID idUser, UUID idPost, UUID idCmt,String content);
 

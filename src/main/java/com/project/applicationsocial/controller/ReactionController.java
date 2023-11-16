@@ -29,7 +29,6 @@ public class ReactionController {
         if (userDetail == null) {
             throw new ForbiddenException("User is need login before posting!");
         }
-
         UUID id = userDetail.getId();
         reactionService.createReaction(id, request);
         ResponseModel responseModel = new ResponseModel<>();

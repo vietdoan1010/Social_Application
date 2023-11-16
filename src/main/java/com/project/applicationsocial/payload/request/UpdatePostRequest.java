@@ -13,7 +13,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdatePostRequest {
-    private UUID id;
     private String title;
     private String body;
     private StatusEnum status;

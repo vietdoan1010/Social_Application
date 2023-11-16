@@ -22,23 +22,40 @@ import org.springframework.security.web.SecurityFilterChain;
 public class ServiceConfig{
 
 
-    // User Creation
+
     @Bean
     public UserDetailsService userDetailsService() {
         return new UserDetailServiceImpl();
     }
 
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//        http.cors().and().csrf().disable().authorizeHttpRequests(requests -> requests
+//                        .requestMatchers("/auth/**","/swagger-ui/**",
+//                                "/v3/api-docs/**",
+//                                "/api-docs/**",
+//                                "/v2/api-docs/**",
+//                                "/swagger-resources/**","/**").permitAll())
+//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//                .and()
+//                .authenticationProvider(authenticationProvider());
+//
+//
+//        return http.build();
+//
+//    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable()
                 .authorizeHttpRequests()
-//                .requestMatchers("/auth/**","/swagger-ui/**",
-//                        "/v3/api-docs/**",
-//                        "/api-docs/**",
-//                        "/v2/api-docs/**",
-//                        "/swagger-resources/**").permitAll()
 //                .requestMatchers("/api/**").authenticated()
+                .requestMatchers("/**","/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/api-docs/**",
+                        "/v2/api-docs/**",
+                        "/swagger-resources/**").permitAll()
+
                 .anyRequest().permitAll()
                 .and()
                 .sessionManagement()
@@ -46,10 +63,6 @@ public class ServiceConfig{
                 .and()
                 .build();
     }
-
-
-
-    // Password Encoding
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -67,7 +80,6 @@ public class ServiceConfig{
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
-
 
 
 

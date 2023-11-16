@@ -3,6 +3,7 @@ package com.project.applicationsocial.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.UUID;
 
@@ -11,7 +12,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "favorites")
-public class Favorites {
+public class Favorites implements Serializable {
     @Id
     @Column(name = "post_id")
     private UUID postID;

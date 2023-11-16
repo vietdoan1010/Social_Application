@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/favorites")
+@RequestMapping("/api/favorites")
 public class FavoritesController {
     @Autowired
     FavoritesService favoritesService;
@@ -24,10 +24,10 @@ public class FavoritesController {
     @Autowired
     FavoritesServiceImpl favoritesServiceImpl;
 
-    @PostMapping(value = "/add")
+    @PostMapping(value = "/add/{postID}/{collectName}")
     public ResponseEntity<?> addFavorites(@AuthenticationPrincipal UserDetail userDetail,
-                                          @RequestParam(name = "postID") UUID postID,
-                                          @RequestParam(name = "collectName") String collectName)
+                                          @PathVariable(name = "postID") UUID postID,
+                                          @PathVariable(name = "collectName") String collectName)
     {
         if (userDetail == null) {
             throw new ForbiddenException("User is need login before posting!");
@@ -42,9 +42,9 @@ public class FavoritesController {
     }
 
 
-    @DeleteMapping(value = "/delete")
+    @DeleteMapping(value = "/delete/{postID}")
     public ResponseEntity<?> removeFavorites(@AuthenticationPrincipal UserDetail userDetail,
-                                          @RequestParam(name = "postID") UUID postID)
+                                          @PathVariable(name = "postID") UUID postID)
     {
         if (userDetail == null) {
             throw new ForbiddenException("User is need login before posting!");

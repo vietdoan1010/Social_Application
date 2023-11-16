@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/post")
+@RequestMapping("/api/post")
 public class PostController {
     @Autowired
     PostService postService;
@@ -53,8 +53,8 @@ public class PostController {
         return ResponseEntity.ok().body(responseModel);
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<ResponseModel> deletePost(@AuthenticationPrincipal UserDetail userDetail,@RequestParam("idPost") UUID idPost) throws Exception {
+    @DeleteMapping("/delete/{idPost}")
+    public ResponseEntity<ResponseModel> deletePost(@AuthenticationPrincipal UserDetail userDetail,@PathVariable(name = "idPost") UUID idPost) throws Exception {
         if (userDetail == null) {
             throw new ForbiddenException("User is need login before delete post!");
         }
@@ -65,8 +65,8 @@ public class PostController {
         return ResponseEntity.ok().body(responseModel);
     }
 
-    @PutMapping(value="/update",consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<ResponseModel> updatePost(@AuthenticationPrincipal UserDetail userDetail, @RequestParam("idPost") UUID idPost, @ModelAttribute UpdatePostRequest updateRequest) throws Exception {
+    @PutMapping(value="/update/{idPost}",consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<ResponseModel> updatePost(@AuthenticationPrincipal UserDetail userDetail, @PathVariable(name = "idPost") UUID idPost, @ModelAttribute UpdatePostRequest updateRequest) throws Exception {
         if (userDetail == null) {
             throw new ForbiddenException("User is need login before update post!");
         }
@@ -77,52 +77,4 @@ public class PostController {
         return ResponseEntity.ok().body(responseModel);
     }
 
-
-    @PostMapping(value = "/comment/create",consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<?> addComment(@AuthenticationPrincipal UserDetail userDetail,
-                                        @ModelAttribute CommentRequest commentRequest) throws Exception {
-        if (userDetail == null) {
-            throw new ForbiddenException("User is need login before comment post!");
-        }
-        postService.addComment(userDetail.getId(), commentRequest.getPostID(), commentRequest.getContent());
-        ResponseModel responseModel = new ResponseModel<>();
-        responseModel.setCode(200);
-        responseModel.setData("Comment post is success!");
-        return ResponseEntity.ok().body(responseModel);
-    }
-
-    @DeleteMapping(value = "/comment/remove/{idCmt}")
-    public ResponseEntity<?> removeComment(@AuthenticationPrincipal UserDetail userDetail,
-                                           @PathVariable(name = "idPost") UUID idPost,
-                                           @PathVariable(name = "idCmt") UUID idCmt
-                                           ) {
-        if (userDetail == null) {
-            throw new ForbiddenException("User is need login before comment post!");
-        }
-        postService.removeComment(userDetail.getId(), idPost, idCmt);
-        ResponseModel responseModel = new ResponseModel<>();
-        responseModel.setCode(200);
-        responseModel.setData("Remove comment is success!");
-        return ResponseEntity.ok().body(responseModel);
-    }
-
-    @PutMapping(value = "/comment/update/{idCmt}",consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<?> updateComment(@AuthenticationPrincipal UserDetail userDetail,
-                                           @PathVariable(name = "idCmt") UUID idCmt,
-                                           @ModelAttribute CommentRequest commentRequest
-    ) {
-        if (userDetail == null) {
-            throw new ForbiddenException("User is need login before comment post!");
-        }
-        postService.updateComment(
-                userDetail.getId(),
-                idCmt,
-                commentRequest.getPostID(),
-                commentRequest.getContent()
-        );
-        ResponseModel responseModel = new ResponseModel<>();
-        responseModel.setCode(200);
-        responseModel.setData("Update comment is success!");
-        return ResponseEntity.ok().body(responseModel);
-    }
  }

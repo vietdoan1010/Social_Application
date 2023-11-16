@@ -29,7 +29,6 @@ public class JwtUntil {
                 .setAudience(userPrincipal.getUsername())
                 .setSubject((userPrincipal.getUsername()))
                 .setIssuedAt(new Date())
-//                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
                 .signWith(key(), SignatureAlgorithm.HS256)
                 .compact();

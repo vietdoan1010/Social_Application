@@ -3,23 +3,22 @@ package com.project.applicationsocial.service.Impl;
 import com.project.applicationsocial.exception.BadRequestException;
 import com.project.applicationsocial.exception.NotFoundException;
 import com.project.applicationsocial.model.DTO.UserDTO;
+import com.project.applicationsocial.model.entity.Medias;
 import com.project.applicationsocial.model.entity.Users;
 import com.project.applicationsocial.model.mapper.UserMapper;
 import com.project.applicationsocial.payload.request.LoginRequest;
-import com.project.applicationsocial.payload.request.RegisterRequest;
+import com.project.applicationsocial.payload.request.UserRequest;
+import com.project.applicationsocial.payload.response.FileUploadReponse;
 import com.project.applicationsocial.payload.response.JwtResponse;
 import com.project.applicationsocial.repository.UserRepository;
 import com.project.applicationsocial.service.UserService;
 import com.project.applicationsocial.service.until.JwtUntil;
+import com.project.applicationsocial.service.until.MinIOUntil;
 import com.project.applicationsocial.service.until.PageUntil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
-import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,9 +27,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -46,26 +45,30 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Autowired
+    MinIOUntil minIOUntil;
+
 
     @Override
-    public Users registerUser(RegisterRequest request) {
-        if (repository.existsByUsername(request.getUsername())) {
+    @CacheEvict(value = "users", allEntries = true)
+    public Users registerUser(UserRequest userRequest) {
+        if (repository.existsByUsername(userRequest.getUsername())) {
             throw new BadRequestException("Error: User name is already in use!");
         }
 
-        if(repository.existsByEmail(request.getEmail())) {
+        if(repository.existsByEmail(userRequest.getEmail())) {
             throw new BadRequestException("Error: Email is already in use!");
         }
 
-        Users user = new Users(request.getUsername(),
-                passwordEncoder.encode(request.getPassword()),
-                request.getFirstName(),
-                request.getLastName(),
-                request.getGender(),
-                request.getPhoneNumber(),
-                request.getDateOfBirth(),
-                request.getEmail(),
-                request.getAvatar());
+        Users user = new Users(userRequest.getUsername(),
+                passwordEncoder.encode(userRequest.getPassword()),
+                userRequest.getFirstName(),
+                userRequest.getLastName(),
+                userRequest.getGender(),
+                userRequest.getPhoneNumber(),
+                userRequest.getDateOfBirth(),
+                userRequest.getEmail()
+        );
         String strRoles = user.getRoles();
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         if (strRoles == null) {
@@ -86,7 +89,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<?> login(LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
+                        loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = JwtUntil.generateJwtToken(authentication);
@@ -94,7 +98,8 @@ public class UserServiceImpl implements UserService {
         UserDetail userDetail  = (UserDetail) authentication.getPrincipal();
         return ResponseEntity.ok().body(new JwtResponse(jwt,
                 userDetail.getId(),
-                userDetail.getUsername(),userDetail.getRoles(), userDetail.getFirst_name(), userDetail.getLast_name()));
+                userDetail.getUsername(),userDetail.getRoles(),
+                userDetail.getFirst_name(), userDetail.getLast_name()));
     }
 
     @Override
@@ -114,13 +119,39 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @CacheEvict(value = "users",key = "#user.id")
-    public Users update(UUID id, Users user) {
-        Optional<Users> user1 = repository.findById(id);
-        if(user1.isPresent()){
-            return repository.save(user);
+    @CacheEvict(value = "users", allEntries = true)
+    public Users update(UUID id, UserRequest userRequest) {
+        Optional<Users> usersOptional = repository.findById(id);
+        Users user = usersOptional.get();
+        if(usersOptional.isEmpty()){
+            throw new NotFoundException("User is not found in system");
         }
-        throw new NotFoundException("User is not found in system");
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        user.setUsername(userRequest.getUsername());
+        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+        user.setFirstName(userRequest.getFirstName());
+        user.setLastName(userRequest.getLastName());
+        user.setGender(userRequest.getGender());
+        user.setPhoneNumber(userRequest.getPhoneNumber());
+        user.setDateOfBirth(userRequest.getDateOfBirth());
+        user.setEmail(userRequest.getEmail());
+        user.setUpdatedAt(timestamp);
+        return repository.save(user);
+    }
+
+    @Override
+    public void updateAvt(UUID userID, MultipartFile file) throws Exception {
+        Optional<Users> usersOptional = repository.findById(userID);
+        Users user = usersOptional.get();
+        if(usersOptional.isEmpty()){
+            throw new NotFoundException("User is not found in system");
+        }
+        if (file != null) {
+            String bucketName = "avatar";
+            FileUploadReponse fileUpload =  minIOUntil.uploadFile(file,bucketName, userID);
+            user.setAvatar(fileUpload.getUrlHttp());
+            repository.save(user);
+        }
     }
 
 

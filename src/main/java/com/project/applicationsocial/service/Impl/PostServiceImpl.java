@@ -10,14 +10,12 @@ import com.project.applicationsocial.model.entity.Users;
 import com.project.applicationsocial.payload.request.PostRequest;
 import com.project.applicationsocial.payload.request.UpdatePostRequest;
 import com.project.applicationsocial.payload.response.FileUploadReponse;
-import com.project.applicationsocial.repository.CommentsRepository;
-import com.project.applicationsocial.repository.MediasRepository;
-import com.project.applicationsocial.repository.PostRepository;
-import com.project.applicationsocial.repository.UserRepository;
+import com.project.applicationsocial.repository.*;
 import com.project.applicationsocial.service.PostService;
 import com.project.applicationsocial.service.until.MinIOUntil;
 import com.project.applicationsocial.service.until.PageUntil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,11 +35,16 @@ public class PostServiceImpl implements PostService {
     @Autowired
     CommentsRepository commentsRep;
     @Autowired
+    NotificationsServiceImpl notificationsService;
+    @Autowired
+    FavoriesRepository favoriesRep;
+
+    @Autowired
     MinIOUntil minIOUntil;
 
 
     @Override
-    @Cacheable(value = "getAllPost", key = "#idUser")
+    @Cacheable(value = "posts")
     public List<Posts> getAllPost(UUID idUser, Integer page, Integer size, String field, String sort) {
         Optional<Users> users = userRep.findById(idUser);
         if(users.isEmpty()) throw new NotFoundException("User is not found!");
@@ -60,6 +63,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "posts", allEntries = true)
     public void createPost(PostRequest postRequest, UUID idUser) throws Exception {
         Posts posts = new Posts(postRequest.getTitle(),
                 postRequest.getBody(), postRequest.getStatus());
@@ -88,11 +92,11 @@ public class PostServiceImpl implements PostService {
             mediasRep.saveAll(mediasList);
         }
         postRepository.save(posts);
-
     }
 
     @Override
     @Transactional
+    @CacheEvict(value = "posts", allEntries = true)
     public void deletePost(UUID idPost,UUID idUser) throws Exception {
         Optional<Posts> postsOptional = postRepository.findById(idPost);
         if (postsOptional.isEmpty()) {
@@ -107,13 +111,19 @@ public class PostServiceImpl implements PostService {
             String objectName = toArr[1];
             fileList.add(objectName);
         }
-        mediasRep.deleteAll(mediasOptional);
-        postRepository.deleteById(idPost);
         minIOUntil.deleteListFile(fileList,bucketName, idUser);
+        postRepository.deleteById(idPost);
+        List<Comments> commentsList = commentsRep.findCommentsByPostID(idPost);
+        if (favoriesRep.findById(idPost).isPresent()) {
+            favoriesRep.deleteById(idPost);
+        }
+        commentsRep.deleteAll(commentsList);
+        mediasRep.deleteAll(mediasOptional);
     }
 
     @Override
     @Transactional
+    @CacheEvict(value = "posts", allEntries = true)
     public void updatePost(UUID idPost, UUID idUser, UpdatePostRequest updateRequest) throws Exception {
         Optional<Posts> postsOptional = postRepository.findById(idPost);
         if (postsOptional.isEmpty()) {
@@ -147,7 +157,7 @@ public class PostServiceImpl implements PostService {
         if (updateRequest.getAddFile() != null) {
             MultipartFile[] files = updateRequest.getAddFile();
             postRepository.save(posts);
-            List<Medias> mediasList = new ArrayList<>();
+            List<Medias> mediasList = posts.getMedias();
             for (MultipartFile file : files) {
                 FileUploadReponse lists =  minIOUntil.uploadFile(file,bucketName, idUser);
                 Medias medias = new Medias();
@@ -158,14 +168,12 @@ public class PostServiceImpl implements PostService {
             mediasRep.saveAll(mediasList);
         }
         postRepository.save(posts);
-
-
-
     }
 
     @Override
     @Transactional
-    public void addComment(UUID idUser, UUID idPost, String content)  {
+    @CacheEvict(value = "posts", allEntries = true)
+    public void addComment(UUID idUser, UUID idPost, String content, String fullName)  {
         Optional<Posts> postsOptional = postRepository.findById(idPost);
         if (postsOptional.isEmpty()) {
             throw new NotFoundException("Post is not found!");
@@ -185,10 +193,17 @@ public class PostServiceImpl implements PostService {
         post.setComments(commentList);
         post.setTotalComment(post.getComments().size());
         postRepository.save(post);
+
+        UUID toUser = post.getCreatedBy();
+        if (toUser.equals(idUser)) {
+            String message = fullName + " has comment with your post";
+            notificationsService.createNotifi(idUser, toUser,message, timestamp);
+        }
     }
 
     @Override
     @Transactional
+    @CacheEvict(value = "posts", allEntries = true)
     public void removeComment(UUID idUser, UUID idPost, UUID idCmt)  {
         Optional<Posts> postsOptional = postRepository.findById(idPost);
         if (postsOptional.isEmpty()) {
@@ -211,6 +226,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "posts", allEntries = true)
     public void updateComment(UUID idUser, UUID idCmt, UUID idPost,String content) {
         Optional<Posts> postsOptional = postRepository.findById(idPost);
         if (postsOptional.isEmpty()) {
