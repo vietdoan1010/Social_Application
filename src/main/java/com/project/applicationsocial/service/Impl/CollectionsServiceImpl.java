@@ -30,12 +30,14 @@ public class CollectionsServiceImpl implements CollectionsService {
 
     @Override
     @CacheEvict(value = "collections", allEntries = true)
-    public void updateCollectionName(UUID userID ,String collectionName, String newNameCollection) {
-        Collections collection = collectionsRep.getCollectionsByNameAndAndUserID(userID, collectionName);
-        if (collection ==  null) {
+    public void updateCollectionName(UUID userID,UUID collectionID, String newName) {
+        Optional<Collections> collectionsOptional = collectionsRep.findById(collectionID);
+
+        if (collectionsOptional.isEmpty()) {
             throw new NotFoundException("Collection is not found!");
         }
-        collection.setCollectName(newNameCollection);
+        Collections collection = collectionsOptional.get();
+        collection.setCollectName(newName);
         collectionsRep.save(collection);
     }
 
@@ -52,6 +54,5 @@ public class CollectionsServiceImpl implements CollectionsService {
             throw new ForbiddenException("No permissions granted!");
         }
         collectionsRep.delete(collection);
-
     }
 }

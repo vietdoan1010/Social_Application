@@ -53,38 +53,4 @@ public class UserController {
         return userService.update(id, userRequest);
     }
 
-    @PutMapping(value = "/update/avt", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    @Transactional
-    public ResponseEntity<?> updateAvt(@AuthenticationPrincipal UserDetail userDetail, @RequestParam(value = "file") MultipartFile file) throws Exception {
-        if (userDetail == null) {
-            throw new ForbiddenException("User is need login before update your info!");
-        }
-        userService.updateAvt(userDetail.getId(), file);
-        return ResponseEntity.ok().body("Success Fully");
-    }
-
-    @PostMapping("/follow/{idFl}")
-    public ResponseEntity<?> addFollow(@AuthenticationPrincipal UserDetail userDetail, @PathVariable("idFl") UUID idFl) {
-        UUID userId = userDetail.getId();
-        if (userId.equals(idFl)) {
-            return ResponseEntity.badRequest().body("Cannot follow yourself");
-        }
-        userService.addFollow(userId, idFl);
-        return ResponseEntity.ok().body("Success Fully");
-
-    }
-
-    @DeleteMapping(value = "/unFollow/{id}")
-    public ResponseEntity<?> unFollow(@AuthenticationPrincipal UserDetail userDetail, @RequestParam("idUnFlow") UUID idUnFlow) {
-        UUID userId = userDetail.getId();
-        userService.unFollow(userId, idUnFlow);
-        return ResponseEntity.ok().body("Success Fully");
-    }
-
-
-
-
-
-
-
 }

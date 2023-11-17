@@ -28,7 +28,7 @@ public class AuthController {
         return userService.registerUser(userRequest);
     }
 
-    @PostMapping(  value = "/signin", consumes = "application/json")
+    @PostMapping(  value = "/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         return userService.login(loginRequest);
     }

@@ -3,7 +3,6 @@ package com.project.applicationsocial.service.Impl;
 import com.project.applicationsocial.exception.BadRequestException;
 import com.project.applicationsocial.exception.NotFoundException;
 import com.project.applicationsocial.model.DTO.UserDTO;
-import com.project.applicationsocial.model.entity.Medias;
 import com.project.applicationsocial.model.entity.Users;
 import com.project.applicationsocial.model.mapper.UserMapper;
 import com.project.applicationsocial.payload.request.LoginRequest;
@@ -113,7 +112,6 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    @Cacheable(value = "users", key = "#username")
     public Page<Users> searchUserByName(String username, Integer size, Integer page, String sort, String field) {
         return repository.findUserByName(username, PageUntil.parse( page,size, field, sort));
     }
@@ -154,8 +152,21 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    @Cacheable(value = "listFollow")
+    public List<Users> getListFollow(UUID userID) {
+        Optional<Users> usersOptional = repository.findById(userID);
+        Users user = usersOptional.get();
+        if(usersOptional.isEmpty()){
+            throw new NotFoundException("User is not found in system");
+        }
+
+       return user.getListIdFollow();
+    }
+
 
     @Override
+    @CacheEvict(value = "listFollow", allEntries = true)
     public void addFollow (UUID userId, UUID idFollow) {
         Optional<Users> usersOptional = repository.findById(userId);
         if (usersOptional.isEmpty()) {
@@ -169,7 +180,7 @@ public class UserServiceImpl implements UserService {
         }
 
         Users usersFollow = userFollowingOption.get();
-        Set<Users> listFollowing = user.getListIdFollow();
+        List<Users> listFollowing = user.getListIdFollow();
 
         if (listFollowing.contains(usersFollow)) {
             throw new ResponseStatusException(HttpStatus.ALREADY_REPORTED, "User has exist");
@@ -181,6 +192,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CacheEvict(value = "listFollow", allEntries = true)
     public void unFollow(UUID userID, UUID idFollow) {
         Optional<Users> usersOptional = repository.findById(userID);
         if (usersOptional.isEmpty()) {
@@ -193,7 +205,7 @@ public class UserServiceImpl implements UserService {
         }
 
         Users usersFollow = userFollowingOption.get();
-        Set<Users> listFollowing = user.getListIdFollow();
+        List<Users> listFollowing =  user.getListIdFollow();
 
         if (!listFollowing.contains(usersFollow)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND , "User following is not found in list follow");

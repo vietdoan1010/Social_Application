@@ -72,7 +72,7 @@ public class Users implements Serializable {
             name = "follow",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns =@JoinColumn(name = "following_user_id"))
-       Set<Users> listIdFollow  = new HashSet<>();
+       List<Users> listIdFollow  = new ArrayList<>();
 
     public Users(String username, String password, String firstName, String lastName, Boolean gender, String phoneNumber, Timestamp dateOfBirth, String email) {
         this.username = username;

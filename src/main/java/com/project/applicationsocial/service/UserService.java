@@ -24,6 +24,8 @@ public interface UserService {
 
     void updateAvt(UUID userID, MultipartFile file) throws Exception;
 
+    List<Users> getListFollow(UUID userID);
+
     void addFollow(UUID userID,UUID idFollow);
 
     void unFollow(UUID userID, UUID idFollow);

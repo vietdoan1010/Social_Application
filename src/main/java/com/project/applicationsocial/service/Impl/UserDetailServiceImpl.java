@@ -19,7 +19,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
         Optional<Users> userDetail = userRepository.findByUsername(username);
 
-        // Converting userDetail to UserDetails
+        // Converting user to UserDetail
         return userDetail.map(UserDetail::new)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found " + username));
     }

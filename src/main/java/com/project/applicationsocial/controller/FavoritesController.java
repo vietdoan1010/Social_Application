@@ -59,7 +59,7 @@ public class FavoritesController {
     }
 
 
-    @GetMapping("/getAllCollections")
+    @GetMapping("/collections")
     public List<Collections> getAll(){
         return favoritesServiceImpl.getAllCollections();
     }

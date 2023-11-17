@@ -8,6 +8,6 @@ import java.util.UUID;
 public interface CollectionsService {
     List<Collections> getAllCollections(UUID userID);
 
-    void updateCollectionName(UUID userID,String collectionName, String newNameCollection);
+    void updateCollectionName(UUID userID,UUID collectionID, String newName);
     void deleteCollection(UUID userID,UUID collectionID);
 }

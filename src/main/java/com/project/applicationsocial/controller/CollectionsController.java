@@ -30,17 +30,17 @@ public class CollectionsController {
         return  collectionsService.getAllCollections(userDetail.getId());
     }
 
-    @PutMapping("/update")
+    @PutMapping("/update/{collectionID}/{newName}")
     public ResponseEntity<?> updateCollectionName(@AuthenticationPrincipal UserDetail userDetail,
-                                                  @RequestParam(value = "oldName") String name,
-                                                  @RequestParam(value = "newName") String newName)
+                                                  @PathVariable(value = "collectionID") UUID collectionID,
+                                                  @PathVariable(value = "newName") String newName)
     {
         if (userDetail == null) {
             throw new ForbiddenException("User is need login before update name collection!");
         }
 
         UUID id = userDetail.getId();
-        collectionsService.updateCollectionName(userDetail.getId(),name, newName);
+        collectionsService.updateCollectionName(userDetail.getId(),collectionID, newName);
         ResponseModel responseModel = new ResponseModel<>();
         responseModel.setCode(200);
         responseModel.setData("Update name to collection successfully!!");
